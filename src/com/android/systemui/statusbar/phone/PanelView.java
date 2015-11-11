@@ -38,6 +38,7 @@ import com.android.systemui.doze.DozeLog;
 import com.android.systemui.statusbar.FlingAnimationUtils;
 import com.android.systemui.statusbar.StatusBarState;
 import com.android.systemui.statusbar.policy.HeadsUpManager;
+import com.dingjun.debug.Debug;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -726,6 +727,7 @@ public abstract class PanelView extends FrameLayout {
 
     public void setExpandedHeightInternal(float h) {
         float fhWithoutOverExpansion = getMaxPanelHeight() - getOverExpansionAmount();
+        Debug.d("mHeightAnimator = " + mHeightAnimator);
         if (mHeightAnimator == null) {
             float overExpansionPixels = Math.max(0, h - fhWithoutOverExpansion);
             if (getOverExpansionPixels() != overExpansionPixels && mTracking) {

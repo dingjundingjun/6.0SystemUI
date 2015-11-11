@@ -50,6 +50,7 @@ import com.android.systemui.statusbar.policy.NetworkControllerImpl.EmergencyList
 import com.android.systemui.statusbar.policy.NextAlarmController;
 import com.android.systemui.statusbar.policy.UserInfoController;
 import com.android.systemui.tuner.TunerService;
+import com.dingjun.debug.Debug;
 
 import java.text.NumberFormat;
 
@@ -270,6 +271,7 @@ public class StatusBarHeaderView extends RelativeLayout implements View.OnClickL
     }
 
     public void setBatteryController(BatteryController batteryController) {
+    	Debug.d("StatusBarHeaderView setBatteryController " + batteryController + " this=" + this);
         mBatteryController = batteryController;
         ((BatteryMeterView) findViewById(R.id.battery)).setBatteryController(batteryController);
     }

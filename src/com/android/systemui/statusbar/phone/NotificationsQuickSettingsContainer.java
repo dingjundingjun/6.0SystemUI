@@ -32,7 +32,7 @@ import com.android.systemui.R;
 public class NotificationsQuickSettingsContainer extends FrameLayout
         implements ViewStub.OnInflateListener {
 
-    private View mScrollView;
+//    private View mScrollView;
     private View mUserSwitcher;
     private View mStackScroller;
     private View mKeyguardStatusBar;
@@ -46,7 +46,7 @@ public class NotificationsQuickSettingsContainer extends FrameLayout
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mScrollView = findViewById(R.id.scroll_view);
+//        mScrollView = findViewById(R.id.scroll_view);
         mStackScroller = findViewById(R.id.notification_stack_scroller);
         mKeyguardStatusBar = findViewById(R.id.keyguard_header);
         ViewStub userSwitcher = (ViewStub) findViewById(R.id.keyguard_user_switcher);
@@ -62,34 +62,35 @@ public class NotificationsQuickSettingsContainer extends FrameLayout
 
     @Override
     protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
-        boolean userSwitcherVisible = mInflated && mUserSwitcher.getVisibility() == View.VISIBLE;
-        boolean statusBarVisible = mKeyguardStatusBar.getVisibility() == View.VISIBLE;
-
-        View stackQsTop = mQsExpanded ? mStackScroller : mScrollView;
-        View stackQsBottom = !mQsExpanded ? mStackScroller : mScrollView;
+//        boolean userSwitcherVisible = mInflated && mUserSwitcher.getVisibility() == View.VISIBLE;
+//        boolean statusBarVisible = mKeyguardStatusBar.getVisibility() == View.VISIBLE;
+//
+//        View stackQsTop = mQsExpanded ? mStackScroller : mScrollView;
+//        View stackQsBottom = !mQsExpanded ? mStackScroller : mScrollView;
         // Invert the order of the scroll view and user switcher such that the notifications receive
         // touches first but the panel gets drawn above.
-        if (child == mScrollView) {
-            return super.drawChild(canvas, userSwitcherVisible && statusBarVisible ? mUserSwitcher
-                    : statusBarVisible ? mKeyguardStatusBar
-                    : userSwitcherVisible ? mUserSwitcher
-                    : stackQsBottom, drawingTime);
-        } else if (child == mStackScroller) {
-            return super.drawChild(canvas,
-                    userSwitcherVisible && statusBarVisible ? mKeyguardStatusBar
-                    : statusBarVisible || userSwitcherVisible ? stackQsBottom
-                    : stackQsTop,
-                    drawingTime);
-        } else if (child == mUserSwitcher) {
-            return super.drawChild(canvas,
-                    userSwitcherVisible && statusBarVisible ? stackQsBottom
-                    : stackQsTop,
-                    drawingTime);
-        } else if (child == mKeyguardStatusBar) {
-            return super.drawChild(canvas,
-                    stackQsTop,
-                    drawingTime);
-        }else {
+//        if (child == mScrollView) {
+//            return super.drawChild(canvas, userSwitcherVisible && statusBarVisible ? mUserSwitcher
+//                    : statusBarVisible ? mKeyguardStatusBar
+//                    : userSwitcherVisible ? mUserSwitcher
+//                    : stackQsBottom, drawingTime);
+//        } else if (child == mStackScroller) {
+//            return super.drawChild(canvas,
+//                    userSwitcherVisible && statusBarVisible ? mKeyguardStatusBar
+//                    : statusBarVisible || userSwitcherVisible ? stackQsBottom
+//                    : stackQsTop,
+//                    drawingTime);
+//        } else if (child == mUserSwitcher) {
+//            return super.drawChild(canvas,
+//                    userSwitcherVisible && statusBarVisible ? stackQsBottom
+//                    : stackQsTop,
+//                    drawingTime);
+//        } else if (child == mKeyguardStatusBar) {
+//            return super.drawChild(canvas,
+//                    stackQsTop,
+//                    drawingTime);
+//        }else 
+        {
             return super.drawChild(canvas, child, drawingTime);
         }
     }

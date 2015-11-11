@@ -25,10 +25,12 @@ import android.widget.FrameLayout;
 
 import java.util.ArrayList;
 
+import com.dingjun.debug.Debug;
+
 public abstract class PanelBar extends FrameLayout {
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
     public static final String TAG = PanelBar.class.getSimpleName();
-    private static final boolean SPEW = false;
+    private static final boolean SPEW = true;
 
     public static final void LOG(String fmt, Object... args) {
         if (!DEBUG) return;
@@ -77,6 +79,7 @@ public abstract class PanelBar extends FrameLayout {
         for (int i=0; i<N; i++) {
             final View v = ph.getChildAt(i);
             if (v != null && v instanceof PanelView) {
+            	Debug.d("setPanelHolder v = " + v + " line:"+ Thread.currentThread().getStackTrace()[2].getLineNumber());
                 addPanel((PanelView) v);
             }
         }
@@ -172,7 +175,9 @@ public abstract class PanelBar extends FrameLayout {
         if (SPEW) LOG("panelExpansionChanged: start state=%d panel=%s", mState, panel.getName());
         mPanelExpandedFractionSum = 0f;
         for (PanelView pv : mPanels) {
-            pv.setVisibility(expanded ? View.VISIBLE : View.INVISIBLE);
+        	Debug.d("expanded = " + expanded + " pv = " + pv + " " + Thread.currentThread().getStackTrace()[2].getMethodName());
+            //这个是点击以后设置显示
+        	pv.setVisibility(expanded ? View.VISIBLE : View.INVISIBLE);
             // adjust any other panels that may be partially visible
             if (expanded) {
                 if (mState == STATE_CLOSED) {

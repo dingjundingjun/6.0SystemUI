@@ -39,6 +39,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.android.systemui.statusbar.policy.BatteryController;
+import com.dingjun.debug.Debug;
 
 public class BatteryMeterView extends View implements DemoMode,
         BatteryController.BatteryStateChangeCallback {
@@ -177,6 +178,8 @@ public class BatteryMeterView extends View implements DemoMode,
             // preload the battery level
             mTracker.onReceive(getContext(), sticky);
         }
+        Debug.d("mBatteryController = " + mBatteryController + " this = " + this);
+        
         mBatteryController.addStateChangedCallback(this);
         getContext().getContentResolver().registerContentObserver(
                 Settings.System.getUriFor(SHOW_PERCENT_SETTING), false, mSettingObserver);
@@ -192,6 +195,7 @@ public class BatteryMeterView extends View implements DemoMode,
     }
 
     public void setBatteryController(BatteryController batteryController) {
+    	Debug.d("setBatteryController = " + batteryController);
         mBatteryController = batteryController;
         mPowerSaveEnabled = mBatteryController.isPowerSave();
     }

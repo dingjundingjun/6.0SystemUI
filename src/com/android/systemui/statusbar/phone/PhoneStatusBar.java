@@ -154,6 +154,7 @@ import com.android.systemui.statusbar.stack.NotificationStackScrollLayout;
 import com.android.systemui.statusbar.stack.NotificationStackScrollLayout.OnChildLocationsChangedListener;
 import com.android.systemui.statusbar.stack.StackViewState;
 import com.android.systemui.volume.VolumeComponent;
+import com.dingjun.debug.Debug;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -184,7 +185,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         HeadsUpManager.OnHeadsUpChangedListener {
     static final String TAG = "PhoneStatusBar";
     public static final boolean DEBUG = BaseStatusBar.DEBUG;
-    public static final boolean SPEW = false;
+    public static final boolean SPEW = true;
     public static final boolean DUMPTRUCK = true; // extra dumpsys info
     public static final boolean DEBUG_GESTURES = false;
     public static final boolean DEBUG_MEDIA = false;
@@ -2109,9 +2110,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         visibilityChanged(true);
         mWaitingForKeyguardExit = false;
-        disable(mDisabledUnmodified1, mDisabledUnmodified2, !force /* animate */);
+//        disable(mDisabledUnmodified1, mDisabledUnmodified2, !force /* animate */);
         setInteracting(StatusBarManager.WINDOW_STATUS_BAR, true);
     }
+    
+    
 
     public void animateCollapsePanels() {
         animateCollapsePanels(CommandQueue.FLAG_EXCLUDE_NONE);
@@ -2996,6 +2999,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
      * meantime, just update the things that we know change.
      */
     void updateResources() {
+    	Debug.d(Thread.currentThread().getStackTrace()[2].getMethodName() + " :" + Thread.currentThread().getStackTrace()[2].getLineNumber());
         // Update the quick setting tiles
         if (mQSPanel != null) {
             mQSPanel.updateResources();

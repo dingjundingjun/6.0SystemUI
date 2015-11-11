@@ -57,9 +57,6 @@
         android:background="@drawable/heads_up_scrim"
         android:importantForAccessibility="no"/>
 
-    <include layout="@layout/status_bar"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/status_bar_height" />
 
     <FrameLayout android:id="@+id/brightness_mirror"
                  android:layout_width="@dimen/notification_panel_width"
@@ -97,4 +94,7 @@
         sysui:ignoreRightInset="true"
         />
 
+    <include layout="@layout/status_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/status_bar_height" />
 </com.android.systemui.statusbar.phone.StatusBarWindowView>

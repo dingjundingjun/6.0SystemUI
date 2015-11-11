@@ -110,7 +110,7 @@ public class PhoneStatusBarView extends PanelBar {
     @Override
     public void onPanelPeeked() {
         super.onPanelPeeked();
-        mBar.makeExpandedVisible(false);
+        mBar.makeExpandedVisible(false);    //这个控制状态栏内容的显示和隐藏
     }
 
     @Override

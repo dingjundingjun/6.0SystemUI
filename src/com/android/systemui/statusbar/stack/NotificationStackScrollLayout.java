@@ -32,6 +32,7 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.AnimationUtils;
+import android.widget.LinearLayout;
 import android.widget.OverScroller;
 
 import com.android.systemui.ExpandHelper;
