@@ -299,7 +299,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private QSPanel mQSPanel;
 
     // top bar
-    StatusBarHeaderView mHeader;
+//    StatusBarHeaderView mHeader;
     KeyguardStatusBarView mKeyguardStatusBar;
     View mKeyguardStatusView;
     KeyguardBottomAreaView mKeyguardBottomArea;
@@ -770,8 +770,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mStatusBarView.setScrimController(mScrimController);
         mDozeScrimController = new DozeScrimController(mScrimController, context);
 
-        mHeader = (StatusBarHeaderView) mStatusBarWindow.findViewById(R.id.header);
-        mHeader.setActivityStarter(this);
+//        mHeader = (StatusBarHeaderView) mStatusBarWindow.findViewById(R.id.header);
+//        mHeader.setActivityStarter(this);
         mKeyguardStatusBar = (KeyguardStatusBarView) mStatusBarWindow.findViewById(R.id.keyguard_header);
         mKeyguardStatusView = mStatusBarWindow.findViewById(R.id.keyguard_status_view);
         mKeyguardBottomArea =
@@ -827,21 +827,21 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 (SignalClusterView) mStatusBarView.findViewById(R.id.signal_cluster);
         final SignalClusterView signalClusterKeyguard =
                 (SignalClusterView) mKeyguardStatusBar.findViewById(R.id.signal_cluster);
-        final SignalClusterView signalClusterQs =
-                (SignalClusterView) mHeader.findViewById(R.id.signal_cluster);
+//        final SignalClusterView signalClusterQs =
+//                (SignalClusterView) mHeader.findViewById(R.id.signal_cluster);
         mNetworkController.addSignalCallback(signalCluster);
         mNetworkController.addSignalCallback(signalClusterKeyguard);
-        mNetworkController.addSignalCallback(signalClusterQs);
+//        mNetworkController.addSignalCallback(signalClusterQs);
         signalCluster.setSecurityController(mSecurityController);
         signalCluster.setNetworkController(mNetworkController);
         signalClusterKeyguard.setSecurityController(mSecurityController);
         signalClusterKeyguard.setNetworkController(mNetworkController);
-        signalClusterQs.setSecurityController(mSecurityController);
-        signalClusterQs.setNetworkController(mNetworkController);
+//        signalClusterQs.setSecurityController(mSecurityController);
+//        signalClusterQs.setNetworkController(mNetworkController);
         final boolean isAPhone = mNetworkController.hasVoiceCallingFeature();
-        if (isAPhone) {
-            mNetworkController.addEmergencyListener(mHeader);
-        }
+//        if (isAPhone) {
+//            mNetworkController.addEmergencyListener(mHeader);
+//        }
 
         mFlashlightController = new FlashlightController(mContext);
         mKeyguardBottomArea.setFlashlightController(mFlashlightController);
@@ -873,7 +873,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mQSPanel.setTiles(qsh.getTiles());
             mBrightnessMirrorController = new BrightnessMirrorController(mStatusBarWindow);
             mQSPanel.setBrightnessMirror(mBrightnessMirrorController);
-            mHeader.setQSPanel(mQSPanel);
+//            mHeader.setQSPanel(mQSPanel);
             qsh.setCallback(new QSTileHost.Callback() {
                 @Override
                 public void onTilesChanged() {
@@ -883,16 +883,16 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
 
         // User info. Trigger first load.
-        mHeader.setUserInfoController(mUserInfoController);
+//        mHeader.setUserInfoController(mUserInfoController);
         mKeyguardStatusBar.setUserInfoController(mUserInfoController);
         mKeyguardStatusBar.setUserSwitcherController(mUserSwitcherController);
         mUserInfoController.reloadUserInfo();
 
-        mHeader.setBatteryController(mBatteryController);
+//        mHeader.setBatteryController(mBatteryController);
         ((BatteryMeterView) mStatusBarView.findViewById(R.id.battery)).setBatteryController(
                 mBatteryController);
         mKeyguardStatusBar.setBatteryController(mBatteryController);
-        mHeader.setNextAlarmController(mNextAlarmController);
+//        mHeader.setNextAlarmController(mNextAlarmController);
 
         PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
         mBroadcastReceiver.onReceive(mContext,
@@ -2247,7 +2247,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         runPostCollapseRunnables();
         setInteracting(StatusBarManager.WINDOW_STATUS_BAR, false);
         showBouncer();
-        disable(mDisabledUnmodified1, mDisabledUnmodified2, true /* animate */);
+//        disable(mDisabledUnmodified1, mDisabledUnmodified2, true /* animate */);
 
         // Trimming will happen later if Keyguard is showing - doing it here might cause a jank in
         // the bouncer appear animation.
@@ -3240,11 +3240,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 (SignalClusterView) mStatusBarView.findViewById(R.id.signal_cluster);
         final SignalClusterView signalClusterKeyguard =
                 (SignalClusterView) mKeyguardStatusBar.findViewById(R.id.signal_cluster);
-        final SignalClusterView signalClusterQs =
-                (SignalClusterView) mHeader.findViewById(R.id.signal_cluster);
+//        final SignalClusterView signalClusterQs =
+//                (SignalClusterView) mHeader.findViewById(R.id.signal_cluster);
         mNetworkController.removeSignalCallback(signalCluster);
         mNetworkController.removeSignalCallback(signalClusterKeyguard);
-        mNetworkController.removeSignalCallback(signalClusterQs);
+//        mNetworkController.removeSignalCallback(signalClusterQs);
         if (mQSPanel != null && mQSPanel.getHost() != null) {
             mQSPanel.getHost().destroy();
         }

@@ -47,7 +47,7 @@
                 android:background="#ff00ff00"
                 android:orientation="vertical">
                  
-                <include layout="@layout/status_bar_expanded_header" />
+                <!-- <include layout="@layout/status_bar_expanded_header" /> -->
                 <include
                     layout="@layout/qs_panel"
                     android:layout_width="match_parent"
