@@ -315,12 +315,12 @@ public class NotificationPanelView extends PanelView implements
 //            mHeader.post(mUpdateHeader);
 //        }
 
-        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mNotificationStackScroller.getLayoutParams();
-        if (lp.width != panelWidth) {
-            lp.width = panelWidth;
-            lp.gravity = panelGravity;
-            mNotificationStackScroller.setLayoutParams(lp);
-        }
+//        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mNotificationStackScroller.getLayoutParams();
+//        if (lp.width != panelWidth) {
+//            lp.width = panelWidth;
+//            lp.gravity = panelGravity;
+//            mNotificationStackScroller.setLayoutParams(lp);
+//        }
 
 //        lp = (FrameLayout.LayoutParams) mScrollView.getLayoutParams();
 //        if (lp.width != panelWidth) {
@@ -862,11 +862,6 @@ public class NotificationPanelView extends PanelView implements
     private boolean isContainerParentCollapsed()
     {
     	return mNotificationContainerParent.getY() == getNotificationContainerParentMinPosition();
-    }
-    
-    private void setContainerParentTransLationMax()
-    {
-    	mNotificationContainerParent.setY(0);
     }
     
     private void collseContainerParent()
@@ -1661,7 +1656,7 @@ public class NotificationPanelView extends PanelView implements
     protected boolean isScrolledToBottom() {
         if (!isInSettings()) {
             return mStatusBar.getBarState() == StatusBarState.KEYGUARD
-                    || mNotificationStackScroller.isScrolledToBottom();
+                    /*|| mNotificationStackScroller.isScrolledToBottom()*/;
         } else {
             return true;
         }
@@ -2278,7 +2273,7 @@ public class NotificationPanelView extends PanelView implements
     @Override
     protected boolean fullyExpandedClearAllVisible() {
         return mNotificationStackScroller.isDismissViewNotGone()
-                && mNotificationStackScroller.isScrolledToBottom() && !mQsExpandImmediate;
+                /*&& mNotificationStackScroller.isScrolledToBottom()*/ && !mQsExpandImmediate;
     }
 
     @Override

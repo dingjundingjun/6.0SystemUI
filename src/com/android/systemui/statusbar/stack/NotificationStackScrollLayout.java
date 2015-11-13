@@ -61,8 +61,9 @@ import java.util.HashSet;
  * A layout which handles a dynamic amount of notifications and presents them in a scrollable stack.
  */
 public class NotificationStackScrollLayout extends ViewGroup
-        implements SwipeHelper.Callback, ExpandHelper.Callback, ScrollAdapter,
-        ExpandableView.OnHeightChangedListener, NotificationGroupManager.OnGroupChangeListener {
+        implements SwipeHelper.Callback, ExpandHelper.Callback, NotificationGroupManager.OnGroupChangeListener
+        /*ScrollAdapter,
+        ExpandableView.OnHeightChangedListener,*/  {
 
     private static final String TAG = "NotificationStackScrollLayout";
     private static final boolean DEBUG = false;
@@ -175,7 +176,7 @@ public class NotificationStackScrollLayout extends ViewGroup
     /**
      * Was the scroller scrolled to the top when the down motion was observed?
      */
-    private boolean mScrolledToTopOnFirstDown;
+//    private boolean mScrolledToTopOnFirstDown;
     /**
      * The minimal amount of over scroll which is needed in order to switch to the quick settings
      * when over scrolling on a expanded card.
@@ -253,7 +254,7 @@ public class NotificationStackScrollLayout extends ViewGroup
         mExpandHelper = new ExpandHelper(getContext(), this,
                 minHeight, maxHeight);
         mExpandHelper.setEventSource(this);
-        mExpandHelper.setScrollAdapter(this);
+//        mExpandHelper.setScrollAdapter(this);
 
         mSwipeHelper = new SwipeHelper(SwipeHelper.X, this, getContext());
         mSwipeHelper.setLongPressListener(mLongPressListener);
@@ -1453,8 +1454,8 @@ public class NotificationStackScrollLayout extends ViewGroup
      */
     private boolean shouldOverScrollFling(int initialVelocity) {
         float topOverScroll = getCurrentOverScrollAmount(true);
-        return mScrolledToTopOnFirstDown
-                && !mExpandedInThisMotion
+        return /*mScrolledToTopOnFirstDown
+                &&*/ !mExpandedInThisMotion
                 && topOverScroll > mMinTopOverScrollToEscape
                 && initialVelocity > 0;
     }
@@ -1517,9 +1518,10 @@ public class NotificationStackScrollLayout extends ViewGroup
             return RUBBER_BAND_FACTOR_AFTER_EXPAND;
         } else if (mIsExpansionChanging || mPanelTracking) {
             return RUBBER_BAND_FACTOR_ON_PANEL_EXPAND;
-        } else if (mScrolledToTopOnFirstDown) {
-            return 1.0f;
-        }
+        } 
+//        else if (mScrolledToTopOnFirstDown) {
+//            return 1.0f;
+//        }
         return RUBBER_BAND_FACTOR_NORMAL;
     }
 
@@ -1530,7 +1532,7 @@ public class NotificationStackScrollLayout extends ViewGroup
      */
     private boolean isRubberbanded(boolean onTop) {
         return !onTop || mExpandedInThisMotion || mIsExpansionChanging || mPanelTracking
-                || !mScrolledToTopOnFirstDown;
+                /*|| !mScrolledToTopOnFirstDown*/;
     }
 
     private void endDrag() {
@@ -1776,7 +1778,7 @@ public class NotificationStackScrollLayout extends ViewGroup
     private void onViewAddedInternal(View child) {
         updateHideSensitiveForChild(child);
         mStackScrollAlgorithm.notifyChildrenChanged(this);
-        ((ExpandableView) child).setOnHeightChangedListener(this);
+//        ((ExpandableView) child).setOnHeightChangedListener(this);
         generateAddAnimation(child, false /* fromMoreCard */);
         updateAnimationState(child);
         if (canChildBeDismissed(child)) {
@@ -2157,7 +2159,7 @@ public class NotificationStackScrollLayout extends ViewGroup
                 mLastMotionY = y;
                 mDownX = (int) ev.getX();
                 mActivePointerId = ev.getPointerId(0);
-                mScrolledToTopOnFirstDown = isScrolledToTop();
+                /*mScrolledToTopOnFirstDown = isScrolledToTop();*/
 
                 initOrResetVelocityTracker();
                 mVelocityTracker.addMovement(ev);
@@ -2227,20 +2229,20 @@ public class NotificationStackScrollLayout extends ViewGroup
         mSwipeHelper.removeLongPressCallback();
     }
 
-    @Override
-    public boolean isScrolledToTop() {
-        return mOwnScrollY == 0;
-    }
-
-    @Override
-    public boolean isScrolledToBottom() {
-        return mOwnScrollY >= getScrollRange();
-    }
-
-    @Override
-    public View getHostView() {
-        return this;
-    }
+//    @Override
+//    public boolean isScrolledToTop() {
+//        return mOwnScrollY == 0;
+//    }
+//
+//    @Override
+//    public boolean isScrolledToBottom() {
+//        return mOwnScrollY >= getScrollRange();
+//    }
+//
+//    @Override
+//    public View getHostView() {
+//        return this;
+//    }
 
     public int getEmptyBottomMargin() {
         int emptyMargin = mMaxLayoutHeight - mContentHeight - mBottomStackPeekSize;
@@ -2289,26 +2291,26 @@ public class NotificationStackScrollLayout extends ViewGroup
         }
     }
 
-    @Override
-    public void onHeightChanged(ExpandableView view, boolean needsAnimation) {
-        updateContentHeight();
-        updateScrollPositionOnExpandInBottom(view);
-        clampScrollPosition();
-        notifyHeightChangeListener(view);
-        if (needsAnimation) {
-            requestAnimationOnViewResize();
-        }
-        requestChildrenUpdate();
-    }
+//    @Override
+//    public void onHeightChanged(ExpandableView view, boolean needsAnimation) {
+//        updateContentHeight();
+//        updateScrollPositionOnExpandInBottom(view);
+//        clampScrollPosition();
+//        notifyHeightChangeListener(view);
+//        if (needsAnimation) {
+//            requestAnimationOnViewResize();
+//        }
+//        requestChildrenUpdate();
+//    }
 
-    @Override
-    public void onReset(ExpandableView view) {
-        if (mIsExpanded && mAnimationsEnabled) {
-            mRequestViewResizeAnimationOnLayout = true;
-        }
-        mStackScrollAlgorithm.onReset(view);
-        updateAnimationState(view);
-    }
+//    @Override
+//    public void onReset(ExpandableView view) {
+//        if (mIsExpanded && mAnimationsEnabled) {
+//            mRequestViewResizeAnimationOnLayout = true;
+//        }
+//        mStackScrollAlgorithm.onReset(view);
+//        updateAnimationState(view);
+//    }
 
     private void updateScrollPositionOnExpandInBottom(ExpandableView view) {
         if (view instanceof ExpandableNotificationRow) {
@@ -2777,7 +2779,7 @@ public class NotificationStackScrollLayout extends ViewGroup
             mNeedsAnimation = true;
         }
         changedRow.setChildrenExpanded(expanded, animated);
-        onHeightChanged(changedRow, false /* needsAnimation */);
+//        onHeightChanged(changedRow, false /* needsAnimation */);
     }
 
     @Override

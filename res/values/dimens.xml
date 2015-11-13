@@ -70,7 +70,7 @@
     <dimen name="navigation_bar_deadzone_size_max">32dp</dimen>
 
     <!-- Height of notification icons in the status bar -->
-    <dimen name="status_bar_icon_size">@*android:dimen/status_bar_icon_size</dimen>
+    <dimen name="status_bar_icon_size">25dip</dimen>
 
     <!-- The font size for the clock -->
     <dimen name="status_bar_clock_size">14sp</dimen>

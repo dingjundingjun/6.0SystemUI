@@ -2263,7 +2263,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 //                        event.getActionMasked(), (int) event.getX(), (int) event.getY(),
 //                        mDisabled1, mDisabled2);
             }
-
         }
 
         if (SPEW) {
