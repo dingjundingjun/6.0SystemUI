@@ -79,6 +79,7 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.animation.AnimationUtils;
 import android.widget.DateTimeView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -1282,7 +1283,7 @@ public abstract class BaseStatusBar extends SystemUI implements
 
         Notification publicNotification = sbn.getNotification().publicVersion;
 
-        ExpandableNotificationRow row;
+        ExpandableNotificationRow row = null;
 
         // Stash away previous user expansion state so we can restore it at
         // the end.
@@ -1300,13 +1301,63 @@ public abstract class BaseStatusBar extends SystemUI implements
                 row.setUserExpanded(userExpanded);
             }
         } else {
+        	
             // create the row view
-            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
-                    Context.LAYOUT_INFLATER_SERVICE);
-            row = (ExpandableNotificationRow) inflater.inflate(R.layout.status_bar_notification_row,
-                    parent, false);
+//            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
+//                    Context.LAYOUT_INFLATER_SERVICE);
+//            row = (ExpandableNotificationRow) inflater.inflate(R.layout.status_bar_notification_row,
+//                    parent, false);
+//            row.setExpansionLogger(this, entry.notification.getKey());
+//            row.setGroupManager(mGroupManager);
+        	// add by dingj
+        	LayoutInflater inflater = (LayoutInflater) mContext
+					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			ArrayList<Entry> activeNotifications = mNotificationData
+					.getActiveNotifications();
+			final int N = activeNotifications.size();
+			boolean isExsitPackage = false;
+			for (int i = 0; i < N; i++) {
+				NotificationData.Entry temp_entry = activeNotifications.get(i);
+				if (temp_entry.notification.getPackageName().equals(
+						entry.notification.getPackageName())) {
+					row = (ExpandableNotificationRow) inflater.inflate(
+							R.layout.status_bar_notification_row,
+							null);
+					Log.d("dingjun","temp_entry parent = " + temp_entry.parent);
+					Log.d("dingjun","temp_entry = " + temp_entry);
+					entry.parent = temp_entry.parent;
+					temp_entry.parent.addView(row);
+					isExsitPackage = true;
+					Log.d("dingjun","has the same Package already = " + temp_entry.notification.getPackageName());
+					break;
+				}
+			}
+            if(!isExsitPackage)
+            {
+    			LinearLayout notificationRowContainer = (LinearLayout)inflater.inflate(
+    					R.layout.notification_row_container, null);
+    			parent.addView(notificationRowContainer);
+            	entry.parent = notificationRowContainer;
+            	Log.d("dingjun","entry parent = " + entry.parent);
+            	TextView app_label = (TextView)notificationRowContainer.findViewById(R.id.app_label);
+    			ImageView app_icon = (ImageView)notificationRowContainer.findViewById(R.id.app_icon);
+    			app_icon.setImageDrawable(entry.icon.getDrawable());
+            	try {
+    				app_label.setText(pmUser.getApplicationLabel(
+                            pmUser.getApplicationInfo(entry.notification.getPackageName(), 0)));
+                } catch (NameNotFoundException e) {
+                	app_label.setText(entry.notification.getPackageName());
+                }
+    			
+				row = (ExpandableNotificationRow) inflater.inflate(
+				R.layout.status_bar_notification_row,
+				entry.parent, false);
+				row.setExpansionLogger(this, entry.notification.getKey());
+				Log.d("dingjun","app_label = " + app_label.getText().toString());
+            }
             row.setExpansionLogger(this, entry.notification.getKey());
-            row.setGroupManager(mGroupManager);
+            Log.d("dingjun","add a notification packageName = " + entry.notification.getPackageName());
+            
         }
 
         workAroundBadLayerDrawableOpacity(row);
@@ -1476,6 +1527,7 @@ public abstract class BaseStatusBar extends SystemUI implements
                 debug.setText("CU " + mCurrentUserId +" NU " + entry.notification.getUserId());
             }
         }
+        publicViewLocal.setVisibility(View.GONE);
         entry.row = row;
         entry.row.setHeightRange(mRowMinHeight, maxHeight);
         entry.row.setOnActivatedListener(this);

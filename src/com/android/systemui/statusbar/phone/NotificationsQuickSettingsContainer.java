@@ -34,7 +34,7 @@ public class NotificationsQuickSettingsContainer extends FrameLayout
 
 //    private View mScrollView;
     private View mUserSwitcher;
-    private View mStackScroller;
+//    private View mStackScroller;
     private View mKeyguardStatusBar;
     private boolean mInflated;
     private boolean mQsExpanded;
@@ -47,7 +47,7 @@ public class NotificationsQuickSettingsContainer extends FrameLayout
     protected void onFinishInflate() {
         super.onFinishInflate();
 //        mScrollView = findViewById(R.id.scroll_view);
-        mStackScroller = findViewById(R.id.notification_stack_scroller);
+//        mStackScroller = findViewById(R.id.notification_stack_scroller);
         mKeyguardStatusBar = findViewById(R.id.keyguard_header);
         ViewStub userSwitcher = (ViewStub) findViewById(R.id.keyguard_user_switcher);
         userSwitcher.setOnInflateListener(this);

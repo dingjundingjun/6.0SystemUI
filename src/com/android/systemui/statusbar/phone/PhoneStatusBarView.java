@@ -26,6 +26,7 @@ import android.view.accessibility.AccessibilityEvent;
 
 import com.android.systemui.DejankUtils;
 import com.android.systemui.R;
+import com.dingjun.debug.Debug;
 
 public class PhoneStatusBarView extends PanelBar {
     private static final String TAG = "PhoneStatusBarView";
@@ -102,9 +103,10 @@ public class PhoneStatusBarView extends PanelBar {
     @Override
     public PanelView selectPanelForTouch(MotionEvent touch) {
         // No double swiping. If either panel is open, nothing else can be pulled down.
-        return mNotificationPanel.getExpandedHeight() > 0
-                ? null
-                : mNotificationPanel;
+//        return mNotificationPanel.getExpandedHeight() > 0
+//                ? null
+//                : mNotificationPanel;
+    	return mNotificationPanel;
     }
 
     @Override
@@ -137,7 +139,7 @@ public class PhoneStatusBarView extends PanelBar {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         boolean barConsumedEvent = mBar.interceptTouchEvent(event);
-
+        Debug.d("PhoneStatusBarView onTouch");
         if (DEBUG_GESTURES) {
             if (event.getActionMasked() != MotionEvent.ACTION_MOVE) {
 //                EventLog.writeEvent(EventLogTags.SYSUI_PANELBAR_TOUCH,

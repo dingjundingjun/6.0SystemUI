@@ -941,14 +941,14 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     }
                 }
                 ExpandableNotificationRow row = (ExpandableNotificationRow) child;
-                List<ExpandableNotificationRow> children = row.getNotificationChildren();
-                if (row.areChildrenExpanded() && children != null) {
-                    for (ExpandableNotificationRow childRow : children) {
-                        if (childRow.getVisibility() == View.VISIBLE) {
-                            viewsToHide.add(childRow);
-                        }
-                    }
-                }
+//                List<ExpandableNotificationRow> children = row.getNotificationChildren();
+//                if (row.areChildrenExpanded() && children != null) {
+//                    for (ExpandableNotificationRow childRow : children) {
+//                        if (childRow.getVisibility() == View.VISIBLE) {
+//                            viewsToHide.add(childRow);
+//                        }
+//                    }
+//                }
             }
         }
         if (viewsToHide.isEmpty()) {
@@ -1376,35 +1376,36 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             }
 
             ExpandableNotificationRow parent = (ExpandableNotificationRow) view;
-            List<ExpandableNotificationRow> children = parent.getNotificationChildren();
+//            List<ExpandableNotificationRow> children = parent.getNotificationChildren();
             List<ExpandableNotificationRow> orderedChildren = mTmpChildOrderMap.get(parent);
 
             // lets first remove all undesired children
-            if (children != null) {
-                toRemove.clear();
-                for (ExpandableNotificationRow childRow : children) {
-                    if (orderedChildren == null || !orderedChildren.contains(childRow)) {
-                        toRemove.add(childRow);
-                    }
-                }
-                for (ExpandableNotificationRow remove : toRemove) {
-                    parent.removeChildNotification(remove);
-                    mStackScroller.notifyGroupChildRemoved(remove);
-                }
-            }
+//            if (children != null) {
+//                toRemove.clear();
+//                for (ExpandableNotificationRow childRow : children) {
+//                    if (orderedChildren == null || !orderedChildren.contains(childRow)) {
+//                        toRemove.add(childRow);
+//                    }
+//                }
+//                for (ExpandableNotificationRow remove : toRemove) {
+//                    parent.removeChildNotification(remove);
+//                    mStackScroller.notifyGroupChildRemoved(remove);
+//                }
+//            }
 
             // We now add all the children which are not in there already
             for (int childIndex = 0; orderedChildren != null && childIndex < orderedChildren.size();
                     childIndex++) {
                 ExpandableNotificationRow childView = orderedChildren.get(childIndex);
-                if (children == null || !children.contains(childView)) {
-                    parent.addChildNotification(childView, childIndex);
-                    mStackScroller.notifyGroupChildAdded(childView);
-                }
+//                if (children == null || !children.contains(childView)) 
+//                {
+//                    parent.addChildNotification(childView, childIndex);
+//                    mStackScroller.notifyGroupChildAdded(childView);
+//                }
             }
 
             // Finally after removing and adding has been beformed we can apply the order.
-            orderChanged |= parent.applyChildOrder(orderedChildren);
+//            orderChanged |= parent.applyChildOrder(orderedChildren);
         }
         if (orderChanged) {
             mStackScroller.generateChildOrderChangedEvent();

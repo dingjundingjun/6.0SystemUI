@@ -63,13 +63,13 @@ public class StackScrollState {
             // handling reset for child notifications
             if (child instanceof ExpandableNotificationRow) {
                 ExpandableNotificationRow row = (ExpandableNotificationRow) child;
-                List<ExpandableNotificationRow> children =
-                        row.getNotificationChildren();
-                if (row.areChildrenExpanded() && children != null) {
-                    for (ExpandableNotificationRow childRow : children) {
-                        resetViewState(childRow);
-                    }
-                }
+//                List<ExpandableNotificationRow> children =
+//                        row.getNotificationChildren();
+//                if (row.areChildrenExpanded() && children != null) {
+//                    for (ExpandableNotificationRow childRow : children) {
+//                        resetViewState(childRow);
+//                    }
+//                }
             }
         }
     }

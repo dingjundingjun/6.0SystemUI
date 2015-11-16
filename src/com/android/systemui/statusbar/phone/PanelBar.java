@@ -102,6 +102,7 @@ public abstract class PanelBar extends FrameLayout {
 
     public PanelView selectPanelForTouch(MotionEvent touch) {
         final int N = mPanels.size();
+        Debug.d("selectPanelForTouch111111111111111111 N = " + N);
         return mPanels.get((int)(N * touch.getX() / getMeasuredWidth()));
     }
 
@@ -112,6 +113,7 @@ public abstract class PanelBar extends FrameLayout {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         // Allow subclasses to implement enable/disable semantics
+    	Debug.d("PaanelBar onTouchEvent");
         if (!panelsEnabled()) {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 Log.v(TAG, String.format("onTouch: all panels disabled, ignoring touch at (%d,%d)",
@@ -119,7 +121,7 @@ public abstract class PanelBar extends FrameLayout {
             }
             return false;
         }
-
+        Debug.d("PaanelBar onTouchEvent1111");
         // figure out which panel needs to be talked to here
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             final PanelView panel = selectPanelForTouch(event);

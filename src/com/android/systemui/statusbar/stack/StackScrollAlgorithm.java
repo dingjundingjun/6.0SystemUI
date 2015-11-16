@@ -358,19 +358,19 @@ public class StackScrollAlgorithm {
                 if (v instanceof ExpandableNotificationRow) {
                     ExpandableNotificationRow row = (ExpandableNotificationRow) v;
 
-                    // handle the notgoneIndex for the children as well
-                    List<ExpandableNotificationRow> children =
-                            row.getNotificationChildren();
-                    if (row.areChildrenExpanded() && children != null) {
-                        for (ExpandableNotificationRow childRow : children) {
-                            if (childRow.getVisibility() != View.GONE) {
-                                StackViewState childState
-                                        = resultState.getViewStateForView(childRow);
-                                childState.notGoneIndex = notGoneIndex;
-                                notGoneIndex++;
-                            }
-                        }
-                    }
+                 // handle the notgoneIndex for the children as well
+//                  List<ExpandableNotificationRow> children =
+//                          row.getNotificationChildren();
+//                  if (row.areChildrenExpanded() && children != null) {
+//                      for (ExpandableNotificationRow childRow : children) {
+//                          if (childRow.getVisibility() != View.GONE) {
+//                              StackViewState childState
+//                                      = resultState.getViewStateForView(childRow);
+//                              childState.notGoneIndex = notGoneIndex;
+//                              notGoneIndex++;
+//                          }
+//                      }
+//                  }
                 }
             }
         }
