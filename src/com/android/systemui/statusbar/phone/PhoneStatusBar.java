@@ -1226,7 +1226,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         if (old != null) {
             if (CLOSE_PANEL_WHEN_EMPTIED && !hasActiveNotifications()
-                    && !mNotificationPanel.isTracking() && !mNotificationPanel.isQsExpanded()) {
+                    && !mNotificationPanel.isTracking() /*&& !mNotificationPanel.isQsExpanded()*/) {
                 if (mState == StatusBarState.SHADE) {
                     animateCollapsePanels();
                 } else if (mState == StatusBarState.SHADE_LOCKED) {
@@ -1907,9 +1907,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         return mLeaveOpenOnKeyguardHide;
     }
 
-    public boolean isQsExpanded() {
-        return mNotificationPanel.isQsExpanded();
-    }
+//    public boolean isQsExpanded() {
+//        return mNotificationPanel.isQsExpanded();
+//        
+//    }
 
     public boolean isScreenOnComingFromTouch() {
         return mScreenOnComingFromTouch;
@@ -3600,14 +3601,16 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         if (mStatusBarKeyguardViewManager.onBackPressed()) {
             return true;
         }
-        if (mNotificationPanel.isQsExpanded()) {
-            if (mNotificationPanel.isQsDetailShowing()) {
-                mNotificationPanel.closeQsDetail();
-            } else {
-                mNotificationPanel.animateCloseQs();
-            }
-            return true;
-        }
+//        if (mNotificationPanel.isQsExpanded()) {
+//            if (mNotificationPanel.isQsDetailShowing()) {
+//                mNotificationPanel.closeQsDetail();
+//            } 
+//            else 
+//            {
+//                mNotificationPanel.animateCloseQs();
+//            }
+//            return true;
+//        }
         if (mState != StatusBarState.KEYGUARD && mState != StatusBarState.SHADE_LOCKED) {
             animateCollapsePanels();
             return true;

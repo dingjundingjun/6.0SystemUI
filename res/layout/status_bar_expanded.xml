@@ -48,13 +48,17 @@
                 android:orientation="vertical">
                  
                 <!-- <include layout="@layout/status_bar_expanded_header" /> -->
+                <include 
+                    layout="@layout/status_quick_setting_container"
+                    />
+                <!--  
                 <include
                     layout="@layout/qs_panel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/notification_side_padding"
                     android:layout_marginRight="@dimen/notification_side_padding"/>
-
+				-->
                 <!-- A view to reserve space for the collapsed stack -->
                 <!-- Layout height: notification_min_height + bottom_stack_peek_amount -->
                 <!--  
@@ -69,6 +73,7 @@
                     android:layout_width="match_parent" />-->
                <ScrollView 
                    android:layout_width="match_parent"
+                   android:layout_gravity="center_horizontal"
                    android:layout_height="600dip"
                    android:background="#ff0000ff"
                    > 
@@ -76,7 +81,6 @@
 		            android:id="@+id/notification_stack_scroller"
 		            android:layout_width="@dimen/notification_panel_width"
 		            android:layout_height="wrap_content"
-		            android:layout_gravity="@integer/notification_panel_layout_gravity"
 		            android:layout_marginBottom="@dimen/close_handle_underlap"
 		            android:importantForAccessibility="no" />
                 </ScrollView>
