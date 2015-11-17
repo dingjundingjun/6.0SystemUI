@@ -37,4 +37,21 @@
         <item>157</item><item>334</item>
         <item>0</item>  <item>334</item>
     </array>
+    
+    <string-array name="status_bar_qs_items">
+        <item>com.android.systemui.statusbar.qscontroll.WifiToggleController</item>
+        <item>com.android.systemui.statusbar.qscontroll.WifiToggleController</item>
+        <item>com.android.systemui.statusbar.qscontroll.WifiToggleController</item>
+        <item>com.android.systemui.statusbar.qscontroll.WifiToggleController</item>
+        <item>com.android.systemui.statusbar.qscontroll.WifiToggleController</item>
+        <item>com.android.systemui.statusbar.qscontroll.WifiToggleController</item>
+        <item>com.android.systemui.statusbar.qscontroll.WifiToggleController</item>
+        <item>com.android.systemui.statusbar.qscontroll.WifiToggleController</item>
+        <item>com.android.systemui.statusbar.qscontroll.WifiToggleController</item>
+        <item>com.android.systemui.statusbar.qscontroll.WifiToggleController</item>
+        <item>com.android.systemui.statusbar.qscontroll.WifiToggleController</item>
+        <item>com.android.systemui.statusbar.qscontroll.WifiToggleController</item>
+        <item>com.android.systemui.statusbar.qscontroll.WifiToggleController</item>
+        <item>com.android.systemui.statusbar.qscontroll.WifiToggleController</item>
+    </string-array>
 </resources>

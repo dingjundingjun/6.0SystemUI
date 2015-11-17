@@ -1,13 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.systemui.statusbar.qscontroll.QuickSettingLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/qs_container"
     android:layout_width="match_parent"
-    android:layout_height="400dip"
-    android:background="#ffffff00"
-     >
-<ImageView 
-    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/ic_camera_alt_24dp"
-    />
-</RelativeLayout>
+    android:orientation="vertical"
+     >
+	<com.android.systemui.statusbar.qscontroll.QuickSettingGridView
+	    android:id="@+id/qs_grid"
+	    android:layout_width="match_parent"
+	    android:layout_height="300dip"
+	    android:numColumns="@integer/notification_grid_one_row_number"
+	    />
+
+	<SeekBar
+	    android:id="@+id/brightness_seek_bar"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_marginLeft="0dp"
+	    android:layout_marginRight="0dp"
+	    android:layout_gravity="center_horizontal"
+	    android:maxHeight="6dp"
+	    android:progressDrawable="@drawable/seek_drawable"
+	    android:thumb="@drawable/seek_thumb"
+	    android:thumbOffset="12dp" />
+	<ImageView 
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:background="@drawable/divider"
+	    />
+	<ImageView 
+		android:id="@+id/btn_qs_control"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:src="@drawable/ic_qs_control"
+	    />
+</com.android.systemui.statusbar.qscontroll.QuickSettingLayout>

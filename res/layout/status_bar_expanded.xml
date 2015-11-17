@@ -41,12 +41,11 @@
         android:clipChildren="false">
 
         <LinearLayout
-                android:layout_width="@dimen/notification_panel_width"
+                android:layout_width="match_parent"
                 android:layout_gravity="@integer/notification_panel_layout_gravity"
                 android:layout_height="match_parent"
                 android:background="#ff00ff00"
                 android:orientation="vertical">
-                 
                 <!-- <include layout="@layout/status_bar_expanded_header" /> -->
                 <include 
                     layout="@layout/status_quick_setting_container"
@@ -74,7 +73,8 @@
                <ScrollView 
                    android:layout_width="match_parent"
                    android:layout_gravity="center_horizontal"
-                   android:layout_height="600dip"
+                   android:layout_height="0dip"
+                   android:layout_weight="1"
                    android:background="#ff0000ff"
                    > 
 	                <com.android.systemui.statusbar.stack.NotificationStackScrollLayout
@@ -82,8 +82,30 @@
 		            android:layout_width="@dimen/notification_panel_width"
 		            android:layout_height="wrap_content"
 		            android:layout_marginBottom="@dimen/close_handle_underlap"
-		            android:importantForAccessibility="no" />
+		            />
                 </ScrollView>
+                
+               <ImageView 
+        		android:id="@+id/notify_clear_all_button"
+        		android:layout_width="wrap_content"
+        		android:layout_height="wrap_content"
+        		android:src="@drawable/btn_notify_clear_bk"
+        		android:layout_gravity="center_horizontal"
+        		android:contentDescription="@string/accessibility_clear_all"
+        		/>
+               <ImageView 
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:background="@drawable/divider"
+                   android:contentDescription="@string/status_bar_pull_devider_description"
+                   />
+               <ImageView 
+                   android:id="@+id/btn_status_bar_pull"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:src="@drawable/status_bar_pull_in"
+                   android:contentDescription="@string/status_bar_pull_in_description"
+                   />
         </LinearLayout>
         <ViewStub
             android:id="@+id/keyguard_user_switcher"

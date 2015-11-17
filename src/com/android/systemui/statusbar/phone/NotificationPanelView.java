@@ -40,6 +40,8 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.view.animation.PathInterpolator;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -60,6 +62,8 @@ import com.android.systemui.statusbar.NotificationData;
 import com.android.systemui.statusbar.StatusBarState;
 import com.android.systemui.statusbar.policy.HeadsUpManager;
 import com.android.systemui.statusbar.policy.KeyguardUserSwitcher;
+import com.android.systemui.statusbar.qscontroll.QuickSettingGridView;
+import com.android.systemui.statusbar.qscontroll.QuickSettingLayout;
 import com.android.systemui.statusbar.stack.NotificationStackScrollLayout;
 import com.android.systemui.statusbar.stack.StackStateAnimator;
 import com.dingjun.debug.Debug;
@@ -111,7 +115,7 @@ public class NotificationPanelView extends PanelView implements
     private VelocityTracker mVelocityTracker;
     private boolean mQsTracking;
 
-    private RelativeLayout mQsContainer;
+    private QuickSettingLayout mQsContainer;
     /**
      * Handles launching the secure camera properly even when other applications may be using the
      * camera hardware.
@@ -214,6 +218,9 @@ public class NotificationPanelView extends PanelView implements
     //add by dingj
     private float mLastNotificationPositionY;
     private float mNotificationContainerInitY;
+    private ImageView mClearAllNotification;
+    private ImageView mPullStatusBar;
+    private QuickSettingGridView mQuickSettingGridView;
     
     private Runnable mHeadsUpExistenceChangedRunnable = new Runnable() {
         @Override
@@ -244,7 +251,9 @@ public class NotificationPanelView extends PanelView implements
         mKeyguardStatusBar = (KeyguardStatusBarView) findViewById(R.id.keyguard_header);
         mKeyguardStatusView = (KeyguardStatusView) findViewById(R.id.keyguard_status_view);
 //        mQsContainer = (QSContainer) findViewById(R.id.quick_settings_container);
-        mQsContainer = (RelativeLayout) findViewById(R.id.qs_container);
+        mQsContainer = (QuickSettingLayout) findViewById(R.id.qs_container);
+        mQsContainer.setBar(mStatusBar);
+        
 //        mQsPanel = (QSPanel) findViewById(R.id.quick_settings_panel);
         mClockView = (TextView) findViewById(R.id.clock_view);
 //        mScrollView = (ObservableScrollView) findViewById(R.id.scroll_view);
@@ -273,6 +282,9 @@ public class NotificationPanelView extends PanelView implements
                 new SecureCameraLaunchManager(getContext(), mKeyguardBottomArea);
         mLastOrientation = getResources().getConfiguration().orientation;
 
+        //add by dingjun
+        mClearAllNotification = (ImageView)findViewById(R.id.notify_clear_all_button);
+        mPullStatusBar = (ImageView)findViewById(R.id.btn_status_bar_pull);
         // recompute internal state when qspanel height changes
 //        mQsContainer.addOnLayoutChangeListener(new OnLayoutChangeListener() {
 //            @Override
@@ -676,11 +688,13 @@ public class NotificationPanelView extends PanelView implements
 //        return !mNotificationStackScroller.isBelowLastNotification(x - stackScrollerX, y)
 //                && stackScrollerX < x && x < stackScrollerX + mNotificationStackScroller.getWidth();
 //    	float yTransformed = y - (mNotificationStackScroller.getY());
-    	boolean yInContent = y < 1400;
-    	boolean xInContent = x > mNotificationStackScroller.getX() && x < mNotificationStackScroller.getWidth() + mNotificationStackScroller.getX();
-        Debug.d("yInContent = " + yInContent + " xInContent = " + xInContent + " y ");
-    	Debug.d("mNotificationStackScroller.getY() =" + mNotificationStackScroller.getY() + " mNotificationStackScroller.getX() =" + mNotificationStackScroller.getX());
-        return yInContent && xInContent;  
+//    	boolean yInContent = y < 1400;
+//    	boolean xInContent = x > mNotificationStackScroller.getX() && x < mNotificationStackScroller.getWidth() + mNotificationStackScroller.getX();
+//        Debug.d("yInContent = " + yInContent + " xInContent = " + xInContent + " y ");
+//    	Debug.d("mNotificationStackScroller.getY() =" + mNotificationStackScroller.getY() + " mNotificationStackScroller.getX() =" + mNotificationStackScroller.getX());
+//        return yInContent && xInContent;  
+    	Debug.d("isInContentBounds x = " + x + " y = " + y + " pull y = " + mPullStatusBar.getY());
+    	return y < mPullStatusBar.getY(); 
     }
 
     private void initDownStates(MotionEvent event) {
@@ -885,7 +899,6 @@ public class NotificationPanelView extends PanelView implements
     
     private void collseContainerParent()
     {
-		new Exception().printStackTrace();
 		bExpaned = false;
     	mNotificationContainerParent.setY(getNotificationContainerParentMinPosition());
     }

@@ -143,4 +143,10 @@
     <color name="volume_icon_color">#ffffffff</color>
     <color name="volume_settings_icon_color">#7fffffff</color>
     <color name="volume_slider_inactive">#FFB0BEC5</color><!-- blue grey 200 -->
+    
+    <!-- add by dingjun -->
+        <color name="notification_toggle_bar_label_color">#ffffffff</color>
+    <color name="notification_toggle_bar_label_checked_color">#ffffffff</color>
+    <color name="notification_toggle_bar_label_disabled_color">#40ffffff</color>
+    <color name="notification_account_toggle_bar_background_color">#ff000000</color>
 </resources>

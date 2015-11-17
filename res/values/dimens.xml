@@ -587,4 +587,8 @@
 
     <!-- Thickness of the shadows of the assist disclosure beams -->
     <dimen name="assist_disclosure_shadow_thickness">1.5dp</dimen>
+    
+    <!-- add by dingjun -->
+    <dimen name="notification_toggle_bar_label_size">14sp</dimen>
+    <dimen name="notification_items_layout_size">90dp</dimen>
 </resources>
