@@ -50,7 +50,7 @@ public class QuickSettingLayout extends LinearLayout
 	public boolean onTouchEvent(MotionEvent event) {
 		float x = event.getX();
 		float y = event.getY();
-		if(!isInControl(x, y))
+		if(!isInControl(x, y) && !isDrag)
 		{
 			return super.onTouchEvent(event);
 		}
@@ -58,14 +58,19 @@ public class QuickSettingLayout extends LinearLayout
 		case MotionEvent.ACTION_DOWN: {
 			mInitY = y;
 			isDrag = true;
+			mQuickSettingGridView.setDraging(isDrag);
 			break;
 		}
 		case MotionEvent.ACTION_MOVE: {
 			float dy = y - mInitY;
+			mQuickSettingGridView.changedHeight(dy);
 			break;
 		}
 		case MotionEvent.ACTION_UP:
 		case MotionEvent.ACTION_CANCEL: {
+			isDrag = false;
+			mQuickSettingGridView.setDraging(isDrag);
+			mQuickSettingGridView.expandOrCollop();
 			break;
 		}
 		}
@@ -81,5 +86,4 @@ public class QuickSettingLayout extends LinearLayout
 		return false;
 	}
 
-	
 }
