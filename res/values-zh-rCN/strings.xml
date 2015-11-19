@@ -433,4 +433,17 @@
     <string name="status_bar_pull_devider_description">下拉分割线</string>
     <string name="status_bar_pull_in_description">下拉状态栏收起</string>
     <string name="wifi_toggle_label">WLAN</string>
+    <string name="mobile_toggle_label">移动数据</string>
+    <string name="trouble_free_toggle_label">免扰模式</string>
+    <string name="eyeshield_toggle_label">护眼模式</string>
+    <string name="super_power_toggle_label">超级省电</string>
+    <string name="lock_screen_toggle_label">锁屏</string>
+    <string name="one_key_cleanup_toggle_label">一键清理</string>
+    <string name="muted_toggle_label">静音模式</string>
+    <string name="screen_shot_toggle_label">截屏</string>
+    <string name="flash_light_toggle_label">手电筒</string>
+    <string name="gps_toggle_label">GPS</string>
+    <string name="rotate_toggle_label">旋转</string>
+    <string name="flight_mode_toggle_label">飞行模式</string>
+    <string name="bluetooth_toggle_label">蓝牙</string>
 </resources>

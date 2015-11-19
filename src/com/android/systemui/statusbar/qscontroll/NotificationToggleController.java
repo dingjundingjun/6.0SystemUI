@@ -38,7 +38,7 @@ public abstract class NotificationToggleController {
     protected BaseStatusBar mBar = null;
 	protected boolean mIsInited = false;
 	
-	protected int mIconLevel = 0;
+	protected int mIconLevel = 1;
 	protected INotificationToggle mToggle = null;
 	
 	

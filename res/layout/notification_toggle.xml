@@ -2,17 +2,15 @@
 <com.android.systemui.statusbar.qscontroll.NotificationToggle 
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:gravity="center_horizontal"
-    android:background="#ffff0000"
-    
     >
     <!-- android:background="@drawable/notification_toggle_bk" -->
     <ImageView 
         android:id="@+id/notification_toggle_icon"
         android:layout_width="@dimen/notification_items_layout_size"
-        android:layout_height="90dip"
+        android:layout_height="@dimen/notification_items_layout_size"
         android:scaleType="centerInside"
         android:contentDescription="@string/app_label"
         >
@@ -25,7 +23,7 @@
         android:gravity="center"
         android:textSize="@dimen/notification_toggle_bar_label_size"
         android:textColor="@color/notification_toggle_bar_label_color"
-        android:text="@string/app_label"
+        android:layout_marginTop="@dimen/notification_toggle_bar_text_margin_top"
         android:singleLine="true"
         android:ellipsize="end"
         >

@@ -39,13 +39,42 @@
         android:id="@+id/notification_container_parent"
         android:clipToPadding="false"
         android:clipChildren="false">
-
+	
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_gravity="@integer/notification_panel_layout_gravity"
                 android:layout_height="match_parent"
-                android:background="#ff00ff00"
+                android:background="#ff002200"
                 android:orientation="vertical">
+          <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" 
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="0dp" >
+            <com.android.systemui.statusbar.policy.Clock
+                android:id="@+id/panel_clock"
+                android:textAppearance="@style/TextAppearance.StatusBar.Expanded.Clock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:gravity="center"
+                />
+            <com.android.systemui.statusbar.policy.DateView
+                android:id="@+id/panel_date"
+                android:textAppearance="@style/TextAppearance.StatusBar.Expanded.Date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/notification_expanded_dateview_text_size"
+                />
+        </LinearLayout>
+        <ImageView 
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:background="@drawable/divider"
+                   android:contentDescription="@string/status_bar_pull_devider_description"
+                   />
+    
                 <!-- <include layout="@layout/status_bar_expanded_header" /> -->
                 <include 
                     layout="@layout/status_quick_setting_container"

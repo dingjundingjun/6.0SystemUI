@@ -103,6 +103,7 @@ public class NotificationToggle extends LinearLayout implements INotificationTog
     public void setIconLevel(int iconLevel) {
         if (null != mIvIcon) {
             mIvIcon.setImageLevel(iconLevel);
+            mController.mIconLevel = iconLevel;
         }
     }
 

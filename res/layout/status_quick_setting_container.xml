@@ -10,27 +10,47 @@
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
 	    />
-
+<LinearLayout 
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingLeft="@dimen/notification_brightness_layout_padding_left"
+    android:paddingRight="@dimen/notification_brightness_layout_padding_right"
+    >
+    <ImageView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/brightness_small"
+        />
 	<SeekBar
 	    android:id="@+id/brightness_seek_bar"
-	    android:layout_width="match_parent"
+	    android:layout_width="@dimen/notification_brightness_seekbar_width"
 	    android:layout_height="wrap_content"
-	    android:layout_marginLeft="0dp"
-	    android:layout_marginRight="0dp"
+	    android:layout_marginLeft="@dimen/notification_brightness_margin_left"
+	    android:layout_marginRight="@dimen/notification_brightness_margin_right"
 	    android:layout_gravity="center_horizontal"
-	    android:maxHeight="6dp"
 	    android:progressDrawable="@drawable/seek_drawable"
+	    android:maxHeight="3dp"
+	    android:splitTrack="false"
 	    android:thumb="@drawable/seek_thumb"
-	    android:thumbOffset="12dp" />
+	    android:thumbOffset="6dp" />
+	<ImageView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/brightness_big"
+        />
+</LinearLayout>
 	<ImageView 
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
 	    android:background="@drawable/divider"
+	    android:layout_marginTop="@dimen/notification_qs_drag_margin_top"
 	    />
 	<ImageView 
 		android:id="@+id/btn_qs_control"
 	    android:layout_width="match_parent"
-	    android:layout_height="80dip"
+	    android:layout_height="wrap_content"
 	    android:src="@drawable/ic_qs_control"
 	    />
 </com.android.systemui.statusbar.qscontroll.QuickSettingLayout>

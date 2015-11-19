@@ -21,8 +21,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.TypedArray;
-import android.text.format.DateFormat;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.widget.TextView;
 
 import com.android.systemui.R;
@@ -37,6 +37,7 @@ public class DateView extends TextView {
     private final Date mCurrentTime = new Date();
 
     private SimpleDateFormat mDateFormat;
+    private SimpleDateFormat mDataFormat_E;
     private String mLastText;
     private String mDatePattern;
 
@@ -78,7 +79,7 @@ public class DateView extends TextView {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-
+        this.setGravity(Gravity.CENTER_HORIZONTAL);
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_TIME_TICK);
         filter.addAction(Intent.ACTION_TIME_CHANGED);
@@ -100,13 +101,19 @@ public class DateView extends TextView {
     protected void updateClock() {
         if (mDateFormat == null) {
             final Locale l = Locale.getDefault();
-            final String fmt = DateFormat.getBestDateTimePattern(l, mDatePattern);
+//            final String fmt = DateFormat.getBestDateTimePattern(l, mDatePattern);
+            final String fmt = "MM-dd";
             mDateFormat = new SimpleDateFormat(fmt, l);
         }
-
+        if(mDataFormat_E == null)
+        {
+        	mDataFormat_E = new SimpleDateFormat("EEEE");
+        }
         mCurrentTime.setTime(System.currentTimeMillis());
-
-        final String text = mDateFormat.format(mCurrentTime);
+        
+        String text_D = mDateFormat.format(mCurrentTime);
+        String text_E = mDataFormat_E.format(mCurrentTime);
+        String text = text_E + "\n" + text_D;
         if (!text.equals(mLastText)) {
             setText(text);
             mLastText = text;

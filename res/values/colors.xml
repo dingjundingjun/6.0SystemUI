@@ -147,6 +147,6 @@
     <!-- add by dingjun -->
         <color name="notification_toggle_bar_label_color">#ffffffff</color>
     <color name="notification_toggle_bar_label_checked_color">#ffffffff</color>
-    <color name="notification_toggle_bar_label_disabled_color">#40ffffff</color>
+    <color name="notification_toggle_bar_label_disabled_color">#4Dffffff</color>
     <color name="notification_account_toggle_bar_background_color">#ff000000</color>
 </resources>

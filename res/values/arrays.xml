@@ -40,18 +40,18 @@
     
     <string-array name="status_bar_qs_items">
         <item>com.android.systemui.statusbar.qscontroll.WifiToggleController</item>
-        <item>com.android.systemui.statusbar.qscontroll.WifiToggleController</item>
-        <item>com.android.systemui.statusbar.qscontroll.WifiToggleController</item>
-        <item>com.android.systemui.statusbar.qscontroll.WifiToggleController</item>
-        <item>com.android.systemui.statusbar.qscontroll.WifiToggleController</item>
-        <item>com.android.systemui.statusbar.qscontroll.WifiToggleController</item>
-        <item>com.android.systemui.statusbar.qscontroll.WifiToggleController</item>
-        <item>com.android.systemui.statusbar.qscontroll.WifiToggleController</item>
-        <item>com.android.systemui.statusbar.qscontroll.WifiToggleController</item>
-        <item>com.android.systemui.statusbar.qscontroll.WifiToggleController</item>
-        <item>com.android.systemui.statusbar.qscontroll.WifiToggleController</item>
-        <item>com.android.systemui.statusbar.qscontroll.WifiToggleController</item>
-        <item>com.android.systemui.statusbar.qscontroll.WifiToggleController</item>
-        <item>com.android.systemui.statusbar.qscontroll.WifiToggleController</item>
+        <item>com.android.systemui.statusbar.qscontroll.MobileNetToggleController</item>
+        <item>com.android.systemui.statusbar.qscontroll.TroubleFreeToggleController</item>
+        <item>com.android.systemui.statusbar.qscontroll.EyeShieldToggleController</item>
+        <item>com.android.systemui.statusbar.qscontroll.SuperPowerToggleController</item>
+        <item>com.android.systemui.statusbar.qscontroll.LockScreenToggleController</item>
+        <item>com.android.systemui.statusbar.qscontroll.OneKeyCleanUpToggleController</item>
+        <item>com.android.systemui.statusbar.qscontroll.MutedToggleController</item>
+        <item>com.android.systemui.statusbar.qscontroll.ScreenShotToggleController</item>
+        <item>com.android.systemui.statusbar.qscontroll.FlashLightToggleController</item>
+        <item>com.android.systemui.statusbar.qscontroll.GPSToggleController</item>
+        <item>com.android.systemui.statusbar.qscontroll.RotateToggleController</item>
+        <item>com.android.systemui.statusbar.qscontroll.FlightModeToggleController</item>
+        <item>com.android.systemui.statusbar.qscontroll.BlueToothToggleController</item>
     </string-array>
 </resources>

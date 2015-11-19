@@ -8,7 +8,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 public class QuickSettingLayout extends LinearLayout
 {
@@ -20,6 +19,8 @@ public class QuickSettingLayout extends LinearLayout
     private BaseStatusBar mStatusBar;
     private float mInitY;
     private boolean isDrag = false;
+    private final int ONBTN_TOUCH_CLICK_DURING_TIME = 500;
+    private long mLastTouchTime;
 	public QuickSettingLayout(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		init(context);
@@ -56,6 +57,7 @@ public class QuickSettingLayout extends LinearLayout
 		}
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN: {
+			mLastTouchTime = System.currentTimeMillis();
 			mInitY = y;
 			isDrag = true;
 			mQuickSettingGridView.setDraging(isDrag);
@@ -70,7 +72,14 @@ public class QuickSettingLayout extends LinearLayout
 		case MotionEvent.ACTION_CANCEL: {
 			isDrag = false;
 			mQuickSettingGridView.setDraging(isDrag);
-			mQuickSettingGridView.expandOrCollop();
+			if(System.currentTimeMillis() - mLastTouchTime < ONBTN_TOUCH_CLICK_DURING_TIME)    //click
+			{
+				mQuickSettingGridView.changeStatus();
+			}
+			else
+			{
+				mQuickSettingGridView.expandOrCollop();
+			}
 			break;
 		}
 		}

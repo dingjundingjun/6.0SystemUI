@@ -86,15 +86,15 @@
     <style name="TextAppearance.StatusBar.Expanded" parent="@*android:style/TextAppearance.StatusBar" />
 
     <style name="TextAppearance.StatusBar.Expanded.Clock">
-        <item name="android:textSize">@dimen/qs_time_expanded_size</item>
+        <item name="android:textSize">@dimen/notification_expanded_timeview_text_size</item>
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textColor">#ffffff</item>
     </style>
 
     <style name="TextAppearance.StatusBar.Expanded.Date">
-        <item name="android:textSize">@dimen/qs_date_collapsed_size</item>
+        <item name="android:textSize">@dimen/notification_expanded_dateview_text_size</item>
         <item name="android:textStyle">normal</item>
-        <item name="android:textColor">#b2ffffff</item>
+        <item name="android:textColor">#ffffffff</item>
     </style>
 
     <style name="TextAppearance.StatusBar.Expanded.AboveDateTime">

@@ -76,7 +76,6 @@ public class WifiToggleController extends NotificationToggleController {
 	public String getLabel() {
 		String label = null;
 		try {
-			Log.d("dingjun","label mContext = " + mContext);
 			label = mContext.getResources().getString(
 					R.string.wifi_toggle_label);
 		} catch (Exception e) {
@@ -85,10 +84,8 @@ public class WifiToggleController extends NotificationToggleController {
 		}
 		
 		if (null == label) {
-			Log.d("dingjun","label = null 111111111111111111");
 			label = DEFAULT_LABEL;
 		}
-		
 		return label;
 	}
 	

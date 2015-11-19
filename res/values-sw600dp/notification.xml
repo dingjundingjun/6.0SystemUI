@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- add by dingjun -->
+    <!-- dimens  -->
+    <dimen name="notification_toggle_bar_label_size">17sp</dimen>
+    <dimen name="notification_items_layout_size">45dp</dimen>
+    <dimen name="notification_toggle_bar_text_margin_top">4dp</dimen>
+    <dimen name="notification_toggle_bar_text_size">17sp</dimen>
+    <dimen name="notification_brightness_seekbar_width">435dp</dimen>
+    <dimen name="notification_brightness_layout_padding_left">41dp</dimen>
+    <dimen name="notification_brightness_layout_padding_right">42dp</dimen>
+    <dimen name="notification_brightness_margin_left">7dp</dimen>
+    <dimen name="notification_brightness_margin_right">8dp</dimen>
+    <dimen name="notification_qs_drag_margin_top">15dp</dimen>
+    <dimen name="notification_expanded_dateview_text_size">17sp</dimen>
+    <dimen name="notification_expanded_timeview_text_size">40sp</dimen>
+    <dimen name="notification_qs_items_layout_padding_top">20sp</dimen>
+</resources>

@@ -24,12 +24,12 @@ public class QuickSettingGridView extends LinearLayout{
 	private BaseStatusBar mBar;
 	private boolean isDraging = false;
 	private float mPrimayHeight;
-	private int mExpandedHeight = 800;
-	private int mCollopHeight = 300;
+	private int mExpandedHeight = 450;
+	private int mCollopHeight = 150;
+	private boolean mExpaned = false;
 	private List<View> mChildViews = new ArrayList<View>();
 	public QuickSettingGridView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		
 		init(context);
 	}
 	
@@ -63,6 +63,7 @@ public class QuickSettingGridView extends LinearLayout{
 		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		params.weight = 1;
 		LinearLayout oneRow = null;
+		int lastNum = COLUMN_NUM - size % COLUMN_NUM;
 		for(int i = 0;i < size;i++)
 		{
 			if(i % COLUMN_NUM == 0)
@@ -72,6 +73,15 @@ public class QuickSettingGridView extends LinearLayout{
 				this.addView(oneRow);
 			}
 			oneRow.addView(mChildViews.get(i), params);
+		}
+		if(lastNum > 0)
+		{
+			for(;lastNum >0;lastNum--)
+			{
+				Debug.d("add lastNum view = " + lastNum);
+				View view = ((LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.notification_toggle, null);
+				oneRow.addView(view,params);
+			}
 		}
 	}
 	
@@ -112,13 +122,12 @@ public class QuickSettingGridView extends LinearLayout{
 	
 	public void setDraging(boolean b)
 	{
-		isDraging = b;
 		mPrimayHeight = getHeight();
 	}
 	
 	public void expandOrCollop()
 	{
-		if(this.getHeight() > (mExpandedHeight - mCollopHeight)/2)
+		if(this.getHeight() > (mExpandedHeight - mCollopHeight)/2 + mCollopHeight)
 		{
 			expend();
 		}
@@ -128,11 +137,23 @@ public class QuickSettingGridView extends LinearLayout{
 		}
 	}
 	
+	public void changeStatus()
+	{
+		if(mExpaned)
+		{
+			collop();
+		}
+		else
+		{
+			expend();
+		}
+	}
 	public void expend()
 	{
 		LinearLayout.LayoutParams params = (LayoutParams) this.getLayoutParams();
 		params.height = mExpandedHeight;
 		this.setLayoutParams(params);
+		mExpaned = true;
 	}
 	
 	public void collop()
@@ -140,54 +161,8 @@ public class QuickSettingGridView extends LinearLayout{
 		LinearLayout.LayoutParams params = (LayoutParams) this.getLayoutParams();
 		params.height = mCollopHeight;
 		this.setLayoutParams(params);
+		mExpaned = false;
 	}
 	
-	/*public class QSAdapter extends BaseAdapter
-	{
-		@Override
-		public int getCount() {
-			return mChildViews.size();
-		}
-
-		@Override
-		public Object getItem(int position) {
-			if (null == mChildViews || mChildViews.size() <= 0
-					|| position >= mChildViews.size()) {
-				return null;
-			}
-			return mChildViews.get(position);
-		}
-
-		@Override
-		public long getItemId(int arg0) {
-			return arg0;
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup arg2) 
-		{
-			if (null == mChildViews || position < 0
-					|| position >= mChildViews.size()) {
-				Log.d(TAG, "index over range: pos: " + position + " total: "
-						+ mChildViews.size());
-				return convertView;
-			}
-			if (convertView == null) {
-				convertView = mChildViews.get(position);
-			}
-
-			NotificationToggle toggle = null;
-			try {
-				toggle = (NotificationToggle) convertView;
-			} catch (Exception e) {
-				e.printStackTrace();
-				toggle = null;
-			}
-			if (null != toggle) {
-				toggle.setBar(mBar);
-			}
-			return convertView;
-		}
-	}*/
-
+	
 }
