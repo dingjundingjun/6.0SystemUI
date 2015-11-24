@@ -300,7 +300,7 @@ public class StatusBarKeyguardViewManager {
             @Override
             public void run() {
                 mStatusBarWindowManager.setKeyguardFadingAway(false);
-                mPhoneStatusBar.finishKeyguardFadingAway();
+                mPhoneStatusBar.finishKeyguardFadingAway();    //ÉèÖÃµ­³öÎªfalse
                 if (mPhoneStatusBar.getNavigationBarView() != null) {
                     mPhoneStatusBar.getNavigationBarView().setWakeAndUnlocking(false);
                 }

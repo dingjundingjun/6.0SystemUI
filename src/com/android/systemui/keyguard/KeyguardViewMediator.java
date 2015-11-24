@@ -570,8 +570,8 @@ public class KeyguardViewMediator extends SystemUI {
         mTrustManager = (TrustManager) mContext.getSystemService(Context.TRUST_SERVICE);
 
         mShowKeyguardWakeLock = mPM.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "show keyguard");
-        mShowKeyguardWakeLock.setReferenceCounted(false);
-
+        mShowKeyguardWakeLock.setReferenceCounted(false);    //计数机制    设置为false表示不论有多少acquire，只要有一次release就释放
+        
         mContext.registerReceiver(mBroadcastReceiver, new IntentFilter(DELAYED_KEYGUARD_ACTION));
 
         mKeyguardDisplayManager = new KeyguardDisplayManager(mContext);
