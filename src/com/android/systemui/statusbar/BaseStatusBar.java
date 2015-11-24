@@ -236,7 +236,7 @@ public abstract class BaseStatusBar extends SystemUI implements
     protected boolean mShowLockscreenNotifications;
 
     protected NotificationOverflowContainer mKeyguardIconOverflowContainer;
-    protected DismissView mDismissView;
+//    protected DismissView mDismissView;
     protected EmptyShadeView mEmptyShadeView;
 
     private NotificationClicker mNotificationClicker = new NotificationClicker();
@@ -1338,10 +1338,23 @@ public abstract class BaseStatusBar extends SystemUI implements
     					R.layout.notification_row_container, null);
     			parent.addView(notificationRowContainer);
             	entry.parent = notificationRowContainer;
+            	Log.d("dingjun","parent = " + parent);
             	Log.d("dingjun","entry parent = " + entry.parent);
             	TextView app_label = (TextView)notificationRowContainer.findViewById(R.id.app_label);
-    			ImageView app_icon = (ImageView)notificationRowContainer.findViewById(R.id.app_icon);
-    			app_icon.setImageDrawable(entry.icon.getDrawable());
+//    			ImageView app_icon = (ImageView)notificationRowContainer.findViewById(R.id.app_icon);
+    			
+    			int image_size = (int)mContext.getResources().getDimension(R.dimen.status_bar_notification_lable_icon_drawing_size);
+//    			Drawable icon_drawable = entry.icon.getDrawable();
+    			Drawable icon_drawable;
+				try {
+					icon_drawable = pmUser.getApplicationIcon(entry.notification.getPackageName());
+					icon_drawable.setBounds(0, 0, image_size, image_size);
+	    			app_label.setCompoundDrawables(icon_drawable, null, null, null);
+				} catch (NameNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+//    			app_icon.setImageDrawable(entry.icon.getDrawable());
             	try {
     				app_label.setText(pmUser.getApplicationLabel(
                             pmUser.getApplicationInfo(entry.notification.getPackageName(), 0)));
@@ -1351,13 +1364,13 @@ public abstract class BaseStatusBar extends SystemUI implements
     			
 				row = (ExpandableNotificationRow) inflater.inflate(
 				R.layout.status_bar_notification_row,
-				entry.parent, false);
+				null, false);
+				entry.parent.addView(row);
 				row.setExpansionLogger(this, entry.notification.getKey());
 				Log.d("dingjun","app_label = " + app_label.getText().toString());
             }
             row.setExpansionLogger(this, entry.notification.getKey());
             Log.d("dingjun","add a notification packageName = " + entry.notification.getPackageName());
-            
         }
 
         workAroundBadLayerDrawableOpacity(row);
@@ -1369,7 +1382,7 @@ public abstract class BaseStatusBar extends SystemUI implements
 
         // bind the click event to the content area
         NotificationContentView contentContainer = row.getPrivateLayout();
-        NotificationContentView contentContainerPublic = row.getPublicLayout();
+//        NotificationContentView contentContainerPublic = row.getPublicLayout();
 
         row.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
 
@@ -1417,24 +1430,24 @@ public abstract class BaseStatusBar extends SystemUI implements
         }
 
         // now the public version
-        View publicViewLocal = null;
-        if (publicNotification != null) {
-            try {
-                publicViewLocal = publicNotification.contentView.apply(
-                        sbn.getPackageContext(mContext),
-                        contentContainerPublic, mOnClickHandler);
-
-                if (publicViewLocal != null) {
-                    publicViewLocal.setIsRootNamespace(true);
-                    contentContainerPublic.setContractedChild(publicViewLocal);
-                }
-            }
-            catch (RuntimeException e) {
-                final String ident = sbn.getPackageName() + "/0x" + Integer.toHexString(sbn.getId());
-                Log.e(TAG, "couldn't inflate public view for notification " + ident, e);
-                publicViewLocal = null;
-            }
-        }
+//        View publicViewLocal = null;
+//        if (publicNotification != null) {
+//            try {
+//                publicViewLocal = publicNotification.contentView.apply(
+//                        sbn.getPackageContext(mContext),
+//                        contentContainerPublic, mOnClickHandler);
+//
+//                if (publicViewLocal != null) {
+//                    publicViewLocal.setIsRootNamespace(true);
+//                    contentContainerPublic.setContractedChild(publicViewLocal);
+//                }
+//            }
+//            catch (RuntimeException e) {
+//                final String ident = sbn.getPackageName() + "/0x" + Integer.toHexString(sbn.getId());
+//                Log.e(TAG, "couldn't inflate public view for notification " + ident, e);
+//                publicViewLocal = null;
+//            }
+//        }
 
         // Extract target SDK version.
         try {
@@ -1444,81 +1457,81 @@ public abstract class BaseStatusBar extends SystemUI implements
             Log.e(TAG, "Failed looking up ApplicationInfo for " + sbn.getPackageName(), ex);
         }
 
-        if (publicViewLocal == null) {
-            // Add a basic notification template
-            publicViewLocal = LayoutInflater.from(mContext).inflate(
-                    R.layout.notification_public_default,
-                    contentContainerPublic, false);
-            publicViewLocal.setIsRootNamespace(true);
-
-            final TextView title = (TextView) publicViewLocal.findViewById(R.id.title);
-            try {
-                title.setText(pmUser.getApplicationLabel(
-                        pmUser.getApplicationInfo(entry.notification.getPackageName(), 0)));
-            } catch (NameNotFoundException e) {
-                title.setText(entry.notification.getPackageName());
-            }
-
-            final ImageView icon = (ImageView) publicViewLocal.findViewById(R.id.icon);
-            final ImageView profileBadge = (ImageView) publicViewLocal.findViewById(
-                    R.id.profile_badge_line3);
-
-            final StatusBarIcon ic = new StatusBarIcon(
-                    entry.notification.getUser(),
-                    entry.notification.getPackageName(),
-                    entry.notification.getNotification().getSmallIcon(),
-                    entry.notification.getNotification().iconLevel,
-                    entry.notification.getNotification().number,
-                    entry.notification.getNotification().tickerText);
-
-            Drawable iconDrawable = StatusBarIconView.getIcon(mContext, ic);
-            icon.setImageDrawable(iconDrawable);
-            if (entry.targetSdk >= Build.VERSION_CODES.LOLLIPOP
-                    || mNotificationColorUtil.isGrayscaleIcon(iconDrawable)) {
-                icon.setBackgroundResource(
-                        com.android.internal.R.drawable.notification_icon_legacy_bg);
-                int padding = mContext.getResources().getDimensionPixelSize(
-                        com.android.internal.R.dimen.notification_large_icon_circle_padding);
-                icon.setPadding(padding, padding, padding, padding);
-                if (sbn.getNotification().color != Notification.COLOR_DEFAULT) {
-                    icon.getBackground().setColorFilter(
-                            sbn.getNotification().color, PorterDuff.Mode.SRC_ATOP);
-                }
-            }
-
-            if (profileBadge != null) {
-                Drawable profileDrawable = mContext.getPackageManager().getUserBadgeForDensity(
-                        entry.notification.getUser(), 0);
-                if (profileDrawable != null) {
-                    profileBadge.setImageDrawable(profileDrawable);
-                    profileBadge.setVisibility(View.VISIBLE);
-                } else {
-                    profileBadge.setVisibility(View.GONE);
-                }
-            }
-
-            final View privateTime = contentViewLocal.findViewById(com.android.internal.R.id.time);
-            final DateTimeView time = (DateTimeView) publicViewLocal.findViewById(R.id.time);
-            if (privateTime != null && privateTime.getVisibility() == View.VISIBLE) {
-                time.setVisibility(View.VISIBLE);
-                time.setTime(entry.notification.getNotification().when);
-            }
-
-            final TextView text = (TextView) publicViewLocal.findViewById(R.id.text);
-            if (text != null) {
-                text.setText(R.string.notification_hidden_text);
-                text.setTextAppearance(mContext,
-                        R.style.TextAppearance_Material_Notification_Parenthetical);
-            }
-
-            int topPadding = Notification.Builder.calculateTopPadding(mContext,
-                    false /* hasThreeLines */,
-                    mContext.getResources().getConfiguration().fontScale);
-            title.setPadding(0, topPadding, 0, 0);
-
-            contentContainerPublic.setContractedChild(publicViewLocal);
-            entry.autoRedacted = true;
-        }
+//        if (publicViewLocal == null) {
+//            // Add a basic notification template
+//            publicViewLocal = LayoutInflater.from(mContext).inflate(
+//                    R.layout.notification_public_default,
+//                    contentContainerPublic, false);
+//            publicViewLocal.setIsRootNamespace(true);
+//
+//            final TextView title = (TextView) publicViewLocal.findViewById(R.id.title);
+//            try {
+//                title.setText(pmUser.getApplicationLabel(
+//                        pmUser.getApplicationInfo(entry.notification.getPackageName(), 0)));
+//            } catch (NameNotFoundException e) {
+//                title.setText(entry.notification.getPackageName());
+//            }
+//
+//            final ImageView icon = (ImageView) publicViewLocal.findViewById(R.id.icon);
+//            final ImageView profileBadge = (ImageView) publicViewLocal.findViewById(
+//                    R.id.profile_badge_line3);
+//
+//            final StatusBarIcon ic = new StatusBarIcon(
+//                    entry.notification.getUser(),
+//                    entry.notification.getPackageName(),
+//                    entry.notification.getNotification().getSmallIcon(),
+//                    entry.notification.getNotification().iconLevel,
+//                    entry.notification.getNotification().number,
+//                    entry.notification.getNotification().tickerText);
+//
+//            Drawable iconDrawable = StatusBarIconView.getIcon(mContext, ic);
+//            icon.setImageDrawable(iconDrawable);
+//            if (entry.targetSdk >= Build.VERSION_CODES.LOLLIPOP
+//                    || mNotificationColorUtil.isGrayscaleIcon(iconDrawable)) {
+//                icon.setBackgroundResource(
+//                        com.android.internal.R.drawable.notification_icon_legacy_bg);
+//                int padding = mContext.getResources().getDimensionPixelSize(
+//                        com.android.internal.R.dimen.notification_large_icon_circle_padding);
+//                icon.setPadding(padding, padding, padding, padding);
+//                if (sbn.getNotification().color != Notification.COLOR_DEFAULT) {
+//                    icon.getBackground().setColorFilter(
+//                            sbn.getNotification().color, PorterDuff.Mode.SRC_ATOP);
+//                }
+//            }
+//
+//            if (profileBadge != null) {
+//                Drawable profileDrawable = mContext.getPackageManager().getUserBadgeForDensity(
+//                        entry.notification.getUser(), 0);
+//                if (profileDrawable != null) {
+//                    profileBadge.setImageDrawable(profileDrawable);
+//                    profileBadge.setVisibility(View.VISIBLE);
+//                } else {
+//                    profileBadge.setVisibility(View.GONE);
+//                }
+//            }
+//
+//            final View privateTime = contentViewLocal.findViewById(com.android.internal.R.id.time);
+//            final DateTimeView time = (DateTimeView) publicViewLocal.findViewById(R.id.time);
+//            if (privateTime != null && privateTime.getVisibility() == View.VISIBLE) {
+//                time.setVisibility(View.VISIBLE);
+//                time.setTime(entry.notification.getNotification().when);
+//            }
+//
+//            final TextView text = (TextView) publicViewLocal.findViewById(R.id.text);
+//            if (text != null) {
+//                text.setText(R.string.notification_hidden_text);
+//                text.setTextAppearance(mContext,
+//                        R.style.TextAppearance_Material_Notification_Parenthetical);
+//            }
+//
+//            int topPadding = Notification.Builder.calculateTopPadding(mContext,
+//                    false /* hasThreeLines */,
+//                    mContext.getResources().getConfiguration().fontScale);
+//            title.setPadding(0, topPadding, 0, 0);
+//
+//            contentContainerPublic.setContractedChild(publicViewLocal);
+//            entry.autoRedacted = true;
+//        }
 
         if (MULTIUSER_DEBUG) {
             TextView debug = (TextView) row.findViewById(R.id.debug_info);
@@ -1527,7 +1540,7 @@ public abstract class BaseStatusBar extends SystemUI implements
                 debug.setText("CU " + mCurrentUserId +" NU " + entry.notification.getUserId());
             }
         }
-        publicViewLocal.setVisibility(View.GONE);
+//        publicViewLocal.setVisibility(View.GONE);
         entry.row = row;
         entry.row.setHeightRange(mRowMinHeight, maxHeight);
         entry.row.setOnActivatedListener(this);
@@ -1850,7 +1863,7 @@ public abstract class BaseStatusBar extends SystemUI implements
         mStackScroller.updateOverflowContainerVisibility(onKeyguard
                 && mKeyguardIconOverflowContainer.getIconsView().getChildCount() > 0);
 
-        mStackScroller.changeViewPosition(mDismissView, mStackScroller.getChildCount() - 1);
+//        mStackScroller.changeViewPosition(mDismissView, mStackScroller.getChildCount() - 1);
         mStackScroller.changeViewPosition(mEmptyShadeView, mStackScroller.getChildCount() - 2);
         mStackScroller.changeViewPosition(mKeyguardIconOverflowContainer,
                 mStackScroller.getChildCount() - 3);

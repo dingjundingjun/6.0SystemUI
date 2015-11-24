@@ -15,4 +15,10 @@
     <dimen name="notification_expanded_dateview_text_size">17sp</dimen>
     <dimen name="notification_expanded_timeview_text_size">40sp</dimen>
     <dimen name="notification_qs_items_layout_padding_top">20sp</dimen>
+    <dimen name="status_bar_notification_lable_icon_drawing_size">60dp</dimen>
+    <dimen name="status_bar_notification_lable_text_size">20sp</dimen>
+    
+    <color name="color_white">#ffffffff</color>
+    
+    <string name="status_bar_notification_container_icon">通知进程图标</string>
 </resources>

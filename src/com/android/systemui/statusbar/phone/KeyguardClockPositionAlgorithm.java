@@ -22,12 +22,14 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.PathInterpolator;
 
 import com.android.systemui.R;
+import com.dingjun.debug.Debug;
 
 /**
  * Utility class to calculate the clock position and top padding of notifications on Keyguard.
  */
 public class KeyguardClockPositionAlgorithm {
 
+	public static final float CLOCK_POSITION_DISTANCE = 500.0f;
     private static final float SLOW_DOWN_FACTOR = 0.4f;
 
     private static final float CLOCK_RUBBERBAND_FACTOR_MIN = 0.08f;
@@ -51,6 +53,7 @@ public class KeyguardClockPositionAlgorithm {
     private int mKeyguardStatusHeight;
     private float mEmptyDragAmount;
     private float mDensity;
+    private float mDY;
 
     /**
      * The number (fractional) of notifications the "more" card counts when calculating how many
@@ -86,7 +89,7 @@ public class KeyguardClockPositionAlgorithm {
     }
 
     public void setup(int maxKeyguardNotifications, int maxPanelHeight, float expandedHeight,
-            int notificationCount, int height, int keyguardStatusHeight, float emptyDragAmount) {
+            int notificationCount, int height, int keyguardStatusHeight, float emptyDragAmount,float dy) {
         mMaxKeyguardNotifications = maxKeyguardNotifications;
         mMaxPanelHeight = maxPanelHeight;
         mExpandedHeight = expandedHeight;
@@ -94,33 +97,41 @@ public class KeyguardClockPositionAlgorithm {
         mHeight = height;
         mKeyguardStatusHeight = keyguardStatusHeight;
         mEmptyDragAmount = emptyDragAmount;
+        mDY = dy;
     }
 
     public void run(Result result) {
-        int y = getClockY() - mKeyguardStatusHeight / 2;
+        int y = (int) (getClockY() - mKeyguardStatusHeight / 2 + mDY);
         float clockAdjustment = getClockYExpansionAdjustment();
         float topPaddingAdjMultiplier = getTopPaddingAdjMultiplier();
         result.stackScrollerPaddingAdjustment = (int) (clockAdjustment*topPaddingAdjMultiplier);
         int clockNotificationsPadding = getClockNotificationsPadding()
                 + result.stackScrollerPaddingAdjustment;
         int padding = y + clockNotificationsPadding;
+        Debug.d("padding = " + padding + " NotificationPadding = " + clockNotificationsPadding);
         result.clockY = y;
         result.stackScrollerPadding = mKeyguardStatusHeight + padding;
+        
+        
         result.clockScale = getClockScale(result.stackScrollerPadding,
                 result.clockY,
                 y + getClockNotificationsPadding() + mKeyguardStatusHeight);
         result.clockAlpha = getClockAlpha(result.clockScale);
+        
+        Debug.d("result.clockY = " + y + " clockScale = " + result.clockScale + " clockAlpha = " + result.clockAlpha);
     }
 
     private float getClockScale(int notificationPadding, int clockY, int startPadding) {
-        float scaleMultiplier = getNotificationAmountT() == 0 ? 6.0f : 5.0f;
-        float scaleEnd = clockY - mKeyguardStatusHeight * scaleMultiplier;
-        float distanceToScaleEnd = notificationPadding - scaleEnd;
-        float progress = distanceToScaleEnd / (startPadding - scaleEnd);
-        progress = Math.max(0.0f, Math.min(progress, 1.0f));
-        progress = mAccelerateInterpolator.getInterpolation(progress);
-        progress *= Math.pow(1 + mEmptyDragAmount / mDensity / 300, 0.3f);
-        return progress;
+//        float scaleMultiplier = getNotificationAmountT() == 0 ? 6.0f : 5.0f;
+//        float scaleEnd = clockY - mKeyguardStatusHeight * scaleMultiplier;
+//        float distanceToScaleEnd = notificationPadding - scaleEnd;
+//        float progress = distanceToScaleEnd / (startPadding - scaleEnd);
+//        progress = Math.max(0.0f, Math.min(progress, 1.0f));
+//        progress = mAccelerateInterpolator.getInterpolation(progress);
+//        progress *= Math.pow(1 + mEmptyDragAmount / mDensity / 300, 0.3f);
+//        return progress;
+    	  float progress = (float) ((CLOCK_POSITION_DISTANCE + mDY)/CLOCK_POSITION_DISTANCE);
+    	  return progress;
     }
 
     private int getClockNotificationsPadding() {
@@ -132,6 +143,7 @@ public class KeyguardClockPositionAlgorithm {
     private float getClockYFraction() {
         float t = getNotificationAmountT();
         t = Math.min(t, 1.0f);
+        Debug.d("YFractionMax = " + mClockYFractionMax + " ClockYMin = " + mClockYFractionMin + " t = " + t);
         return (1 - t) * mClockYFractionMax + t * mClockYFractionMin;
     }
 
@@ -179,6 +191,7 @@ public class KeyguardClockPositionAlgorithm {
      * @return a value from 0 to 1 depending on how many notification there are
      */
     private float getNotificationAmountT() {
+    	Debug.d("mNotificationCount = " + mNotificationCount + " mMaxKeyguardNotifications = " + mMaxKeyguardNotifications + " mMoreCardNotificationAmount = " + mMoreCardNotificationAmount);
         return mNotificationCount
                 / (mMaxKeyguardNotifications + mMoreCardNotificationAmount);
     }

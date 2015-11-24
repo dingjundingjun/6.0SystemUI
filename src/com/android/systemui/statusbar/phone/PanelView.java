@@ -104,6 +104,7 @@ public abstract class PanelView extends FrameLayout {
     private Interpolator mLinearOutSlowInInterpolator;
     private Interpolator mFastOutSlowInInterpolator;
     private Interpolator mBounceInterpolator;
+    /**显示相机和电话按钮*/
     protected KeyguardBottomAreaView mKeyguardBottomArea;
 
     private boolean mPeekPending;

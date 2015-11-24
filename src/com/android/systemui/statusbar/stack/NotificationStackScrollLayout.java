@@ -54,6 +54,7 @@ import com.android.systemui.statusbar.phone.PhoneStatusBar;
 import com.android.systemui.statusbar.phone.ScrimController;
 import com.android.systemui.statusbar.policy.HeadsUpManager;
 import com.android.systemui.statusbar.policy.ScrollAdapter;
+import com.dingjun.debug.Debug;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -170,7 +171,7 @@ public class NotificationStackScrollLayout extends LinearLayout
     private boolean mExpandingNotification;
     private boolean mExpandedInThisMotion;
     private boolean mScrollingEnabled;
-    private DismissView mDismissView;
+//    private DismissView mDismissView;
     private EmptyShadeView mEmptyShadeView;
     private boolean mDismissAllInProgress;
 
@@ -577,23 +578,45 @@ public class NotificationStackScrollLayout extends LinearLayout
     }
 
     public void onChildDismissed(View v) {
-        if (mDismissAllInProgress) {
-            return;
-        }
+    	Debug.d("onChildDismissed v = " + v + " mDismissAllInProgress = " + mDismissAllInProgress);
+//        if (mDismissAllInProgress) {
+//            return;
+//        }
         setSwipingInProgress(false);
         if (mDragAnimPendingChildren.contains(v)) {
             // We start the swipe and finish it in the same frame, we don't want any animation
             // for the drag
             mDragAnimPendingChildren.remove(v);
         }
+        if(v instanceof ExpandableNotificationRow)
+        {
+        	LinearLayout parentView = (LinearLayout)v.getParent();
+        	Debug.d("dismissView parent = " + parentView);
+        	Debug.d("parentView.getChildCount() = " + parentView.getChildCount());
+        	if(parentView.getChildCount() == 2)    //Ê£Óà2¸ö£¬°üÀ¨ÁËtitle label
+        	{
+        		this.removeView(parentView);
+        	}
+        	else
+        	{
+        		parentView.removeView(v);
+        	}
+        	
+        	
+        }
+        else
+        {
+        	this.removeView(v);
+        }
         mSwipedOutViews.add(v);
         mAmbientState.onDragFinished(v);
-        if (v instanceof ExpandableNotificationRow) {
-            ExpandableNotificationRow row = (ExpandableNotificationRow) v;
-            if (row.isHeadsUp()) {
-                mHeadsUpManager.addSwipedOutNotification(row.getStatusBarNotification().getKey());
-            }
-        }
+//        if (v instanceof ExpandableNotificationRow) 
+//        {
+//            ExpandableNotificationRow row = (ExpandableNotificationRow) v;
+//            if (row.isHeadsUp()) {
+//                mHeadsUpManager.addSwipedOutNotification(row.getStatusBarNotification().getKey());
+//            }
+//        }
         final View veto = v.findViewById(R.id.veto);
         if (veto != null && veto.getVisibility() != View.GONE) {
             veto.performClick();
@@ -693,15 +716,49 @@ public class NotificationStackScrollLayout extends LinearLayout
         return closestChild;
     }
 
-    public ExpandableView getChildAtRawPosition(float touchX, float touchY) {
+    public View getChildAtRawPosition(float touchX, float touchY) {
         getLocationOnScreen(mTempInt2);
         return getChildAtPosition(touchX - mTempInt2[0], touchY - mTempInt2[1]);
     }
 
-    public ExpandableView getChildAtPosition(float touchX, float touchY) {
+    public View getChildAtPosition(float touchX, float touchY) {
         // find the view under the pointer, accounting for GONE views
-//        final int count = getChildCount();
-//        for (int childIdx = 0; childIdx < count; childIdx++) {
+        final int count = getChildCount();
+        for (int childIdx = 0; childIdx < count; childIdx++) {
+        	ViewGroup parantLayout = (ViewGroup)getChildAt(childIdx);
+        	if(parantLayout == mSpeedBumpView)
+        	{
+        		continue;
+        	}
+        	int notifiCount = parantLayout.getChildCount();
+        	Debug.d("parentLayout = " + parantLayout + " childCount = " + notifiCount + " parantLayout.getTop() = " + parantLayout.getTop());
+        	for(int j = 0;j < notifiCount;j++)
+        	{
+        		View slidingChild = parantLayout.getChildAt(j);
+        		if (slidingChild.getVisibility() == GONE
+//                        || slidingChild instanceof StackScrollerDecorView
+//                        || slidingChild == mSpeedBumpView
+                        ) {
+                    continue;
+                }
+        		
+//        		float childTop = slidingChild.getTranslationY();
+                float top = parantLayout.getTop() + slidingChild.getTop();
+                float bottom = parantLayout.getTop() + slidingChild.getBottom();
+                Debug.d("slidingChild = " + slidingChild + " top = " + top + " bottom = " + bottom);
+                // Allow the full width of this view to prevent gesture conflict on Keyguard (phone and
+                // camera affordance).
+                int left = 0;
+                int right = getWidth();
+
+                if (touchY >= top && touchY <= bottom && touchX >= left && touchX <= right) {
+                {
+                	Debug.d("slidingChild = " + slidingChild);
+                	return slidingChild;
+                }
+                    
+                }
+        	}
 //            ExpandableView slidingChild = (ExpandableView) getChildAt(childIdx);
 //            if (slidingChild.getVisibility() == GONE
 //                    || slidingChild instanceof StackScrollerDecorView
@@ -728,7 +785,7 @@ public class NotificationStackScrollLayout extends LinearLayout
 //                }
 //                return slidingChild;
 //            }
-//        }
+        }
         return null;
     }
 
@@ -1595,10 +1652,10 @@ public class NotificationStackScrollLayout extends LinearLayout
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                if (mPhoneStatusBar.getBarState() != StatusBarState.KEYGUARD && mTouchIsClick &&
-                        isBelowLastNotification(mInitialTouchX, mInitialTouchY)) {
-                    mOnEmptySpaceClickListener.onEmptySpaceClicked(mInitialTouchX, mInitialTouchY);
-                }
+//                if (mPhoneStatusBar.getBarState() != StatusBarState.KEYGUARD && mTouchIsClick &&
+//                        isBelowLastNotification(mInitialTouchX, mInitialTouchY)) {
+//                    mOnEmptySpaceClickListener.onEmptySpaceClicked(mInitialTouchX, mInitialTouchY);
+//                }
                 break;
         }
     }
@@ -1617,9 +1674,11 @@ public class NotificationStackScrollLayout extends LinearLayout
     @Override
     public void onViewRemoved(View child) {
         super.onViewRemoved(child);
+        Debug.d("onViewRemoved child = " + child);
         // we only call our internal methods if this is actually a removal and not just a
         // notification which becomes a child notification
-        if (!isChildInGroup(child)) {
+//        if (!isChildInGroup(child)) 
+        {
             onViewRemovedInternal(child);
         }
     }
@@ -1630,7 +1689,7 @@ public class NotificationStackScrollLayout extends LinearLayout
             // This is only a position change, don't do anything special
             return;
         }
-        ((ExpandableView) child).setOnHeightChangedListener(null);
+//        ((ExpandableView) child).setOnHeightChangedListener(null);
         mCurrentStackScrollState.removeViewStateForView(child);
         updateScrollStateForRemovedChild(child);
         boolean animationGenerated = generateRemoveAnimation(child);
@@ -1642,7 +1701,7 @@ public class NotificationStackScrollLayout extends LinearLayout
         updateAnimationState(false, child);
 
         // Make sure the clipRect we might have set is removed
-        ((ExpandableView) child).setClipTopOptimization(0);
+//        ((ExpandableView) child).setClipTopOptimization(0);
     }
 
     private boolean isChildInGroup(View child) {
@@ -1774,6 +1833,7 @@ public class NotificationStackScrollLayout extends LinearLayout
     @Override
     public void onViewAdded(View child) {
         super.onViewAdded(child);
+        Debug.d("onViewAdded child = " + child);
         onViewAddedInternal(child);
     }
 
@@ -1788,7 +1848,7 @@ public class NotificationStackScrollLayout extends LinearLayout
             // Make sure the dismissButton is visible and not in the animated state.
             // We need to do this to avoid a race where a clearable notification is added after the
             // dismiss animation is finished
-            mDismissView.showClearButton();
+//            mDismissView.showClearButton();
         }
     }
 
@@ -2377,8 +2437,9 @@ public class NotificationStackScrollLayout extends LinearLayout
         if (hideSensitive != mAmbientState.isHideSensitive()) {
             int childCount = getChildCount();
             for (int i = 0; i < childCount; i++) {
-                ExpandableView v = (ExpandableView) getChildAt(i);
-                v.setHideSensitiveForIntrinsicHeight(hideSensitive);
+//            	 View v = getChildAt(i);
+//                ExpandableView v = (ExpandableView) getChildAt(i);
+//                v.setHideSensitiveForIntrinsicHeight(hideSensitive);
             }
             mAmbientState.setHideSensitive(hideSensitive);
             if (animate && mAnimationsEnabled) {
@@ -2435,7 +2496,7 @@ public class NotificationStackScrollLayout extends LinearLayout
 
     public void goToFullShade(long delay) {
         updateSpeedBump(true /* visibility */);
-        mDismissView.setInvisible();
+//        mDismissView.setInvisible();
         mEmptyShadeView.setInvisible();
         mGoToFullShadeNeedsAnimation = true;
         mGoToFullShadeDelay = delay;
@@ -2510,10 +2571,10 @@ public class NotificationStackScrollLayout extends LinearLayout
         return -1;
     }
 
-    public void setDismissView(DismissView dismissView) {
-        mDismissView = dismissView;
-        addView(mDismissView);
-    }
+//    public void setDismissView(DismissView dismissView) {
+//        mDismissView = dismissView;
+//        addView(mDismissView);
+//    }
 
     public void setEmptyShadeView(EmptyShadeView emptyShadeView) {
         mEmptyShadeView = emptyShadeView;
@@ -2594,44 +2655,44 @@ public class NotificationStackScrollLayout extends LinearLayout
         }
     }
 
-    public void updateDismissView(boolean visible) {
-        int oldVisibility = mDismissView.willBeGone() ? GONE : mDismissView.getVisibility();
-        int newVisibility = visible ? VISIBLE : GONE;
-        if (oldVisibility != newVisibility) {
-            if (newVisibility != GONE) {
-                if (mDismissView.willBeGone()) {
-                    mDismissView.cancelAnimation();
-                } else {
-                    mDismissView.setInvisible();
-                }
-                mDismissView.setVisibility(newVisibility);
-                mDismissView.setWillBeGone(false);
-                updateContentHeight();
-                notifyHeightChangeListener(mDismissView);
-            } else {
-                Runnable dimissHideFinishRunnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        mDismissView.setVisibility(GONE);
-                        mDismissView.setWillBeGone(false);
-                        updateContentHeight();
-                        notifyHeightChangeListener(mDismissView);
-                    }
-                };
-                if (mDismissView.isButtonVisible() && mIsExpanded && mAnimationsEnabled) {
-                    mDismissView.setWillBeGone(true);
-                    mDismissView.performVisibilityAnimation(false, dimissHideFinishRunnable);
-                } else {
-                    dimissHideFinishRunnable.run();
-                    mDismissView.showClearButton();
-                }
-            }
-        }
-    }
+//    public void updateDismissView(boolean visible) {
+//        int oldVisibility = mDismissView.willBeGone() ? GONE : mDismissView.getVisibility();
+//        int newVisibility = visible ? VISIBLE : GONE;
+//        if (oldVisibility != newVisibility) {
+//            if (newVisibility != GONE) {
+//                if (mDismissView.willBeGone()) {
+//                    mDismissView.cancelAnimation();
+//                } else {
+//                    mDismissView.setInvisible();
+//                }
+//                mDismissView.setVisibility(newVisibility);
+//                mDismissView.setWillBeGone(false);
+//                updateContentHeight();
+//                notifyHeightChangeListener(mDismissView);
+//            } else {
+//                Runnable dimissHideFinishRunnable = new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        mDismissView.setVisibility(GONE);
+//                        mDismissView.setWillBeGone(false);
+//                        updateContentHeight();
+//                        notifyHeightChangeListener(mDismissView);
+//                    }
+//                };
+//                if (mDismissView.isButtonVisible() && mIsExpanded && mAnimationsEnabled) {
+//                    mDismissView.setWillBeGone(true);
+//                    mDismissView.performVisibilityAnimation(false, dimissHideFinishRunnable);
+//                } else {
+//                    dimissHideFinishRunnable.run();
+//                    mDismissView.showClearButton();
+//                }
+//            }
+//        }
+//    }
 
     public void setDismissAllInProgress(boolean dismissAllInProgress) {
         mDismissAllInProgress = dismissAllInProgress;
-        mDismissView.setDismissAllInProgress(dismissAllInProgress);
+//        mDismissView.setDismissAllInProgress(dismissAllInProgress);
         mAmbientState.setDismissAllInProgress(dismissAllInProgress);
         if (dismissAllInProgress) {
             disableClipOptimization();
@@ -2640,47 +2701,47 @@ public class NotificationStackScrollLayout extends LinearLayout
     }
 
     private void handleDismissAllClipping() {
-        final int count = getChildCount();
-        boolean previousChildWillBeDismissed = false;
-        for (int i = 0; i < count; i++) {
-            ExpandableView child = (ExpandableView) getChildAt(i);
-            if (child.getVisibility() == GONE) {
-                continue;
-            }
-            if (mDismissAllInProgress && previousChildWillBeDismissed) {
-                child.setMinClipTopAmount(child.getClipTopAmount());
-            } else {
-                child.setMinClipTopAmount(0);
-            }
-            previousChildWillBeDismissed = canChildBeDismissed(child);
-        }
+//        final int count = getChildCount();
+//        boolean previousChildWillBeDismissed = false;
+//        for (int i = 0; i < count; i++) {
+//            ExpandableView child = (ExpandableView) getChildAt(i);
+//            if (child.getVisibility() == GONE) {
+//                continue;
+//            }
+//            if (mDismissAllInProgress && previousChildWillBeDismissed) {
+//                child.setMinClipTopAmount(child.getClipTopAmount());
+//            } else {
+//                child.setMinClipTopAmount(0);
+//            }
+//            previousChildWillBeDismissed = canChildBeDismissed(child);
+//        }
     }
 
     private void disableClipOptimization() {
-        final int count = getChildCount();
-        for (int i = 0; i < count; i++) {
-            ExpandableView child = (ExpandableView) getChildAt(i);
-            if (child.getVisibility() == GONE) {
-                continue;
-            }
-            child.setClipTopOptimization(0);
-        }
+//        final int count = getChildCount();
+//        for (int i = 0; i < count; i++) {
+//            ExpandableView child = (ExpandableView) getChildAt(i);
+//            if (child.getVisibility() == GONE) {
+//                continue;
+//            }
+//            child.setClipTopOptimization(0);
+//        }
     }
 
-    public boolean isDismissViewNotGone() {
-        return mDismissView.getVisibility() != View.GONE && !mDismissView.willBeGone();
-    }
+//    public boolean isDismissViewNotGone() {
+//        return mDismissView.getVisibility() != View.GONE && !mDismissView.willBeGone();
+//    }
 
-    public boolean isDismissViewVisible() {
-        return mDismissView.isVisible();
-    }
+//    public boolean isDismissViewVisible() {
+//        return mDismissView.isVisible();
+//    }
 
     public int getDismissViewHeight() {
-        int height = mDismissView.getHeight() + mPaddingBetweenElementsNormal;
+        int height = /*mDismissView.getHeight() +*/ mPaddingBetweenElementsNormal;
 
         // Hack: Accommodate for additional distance when we only have one notification and the
         // dismiss all button.
-        if (getNotGoneChildCount() == 2 && getLastChildNotGone() == mDismissView
+        if (getNotGoneChildCount() == 2 /*&& getLastChildNotGone() == mDismissView*/
                 && getFirstChildNotGone() instanceof ActivatableNotificationView) {
             height += mCollapseSecondCardPadding;
         }
@@ -2735,23 +2796,23 @@ public class NotificationStackScrollLayout extends LinearLayout
         }
     }
 
-    public boolean isBelowLastNotification(float touchX, float touchY) {
+//    public boolean isBelowLastNotification(float touchX, float touchY) {
     	
-    	View lastChildNotGone = (View) getLastChildNotGone();
-        if (lastChildNotGone == null) {
-            return touchY > mIntrinsicPadding;
-        }
-        if (lastChildNotGone != mDismissView && lastChildNotGone != mEmptyShadeView) {
-            return touchY > lastChildNotGone.getY() + lastChildNotGone.getHeight();
-        } else if (lastChildNotGone == mEmptyShadeView) {
-            return touchY > mEmptyShadeView.getY();
-        } else {
-            float dismissY = mDismissView.getY();
-            boolean belowDismissView = touchY > dismissY + mDismissView.getActualHeight();
-            return belowDismissView || (touchY > dismissY
-                    && mDismissView.isOnEmptySpace(touchX - mDismissView.getX(),
-                    touchY - dismissY));
-        }
+//    	View lastChildNotGone = (View) getLastChildNotGone();
+//        if (lastChildNotGone == null) {
+//            return touchY > mIntrinsicPadding;
+//        }
+//        if (lastChildNotGone != mDismissView && lastChildNotGone != mEmptyShadeView) {
+//            return touchY > lastChildNotGone.getY() + lastChildNotGone.getHeight();
+//        } else if (lastChildNotGone == mEmptyShadeView) {
+//            return touchY > mEmptyShadeView.getY();
+//        } else {
+//            float dismissY = mDismissView.getY();
+//            boolean belowDismissView = touchY > dismissY + mDismissView.getActualHeight();
+//            return belowDismissView || (touchY > dismissY
+//                    && mDismissView.isOnEmptySpace(touchX - mDismissView.getX(),
+//                    touchY - dismissY));
+//        }
         
 //        int childCount = getChildCount();
 //        for (int i = childCount - 1; i >= 0; i--) {
@@ -2779,7 +2840,7 @@ public class NotificationStackScrollLayout extends LinearLayout
 //            }
 //        }
 //        return touchY > mTopPadding + mStackTranslation;
-    }
+//    }
 
     private void updateExpandButtons() {
         for (int i = 0; i < getChildCount(); i++) {

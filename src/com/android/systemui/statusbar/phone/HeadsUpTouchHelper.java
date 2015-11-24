@@ -18,6 +18,7 @@ package com.android.systemui.statusbar.phone;
 
 import android.content.Context;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewConfiguration;
 
 import com.android.systemui.Gefingerpoken;
@@ -79,7 +80,7 @@ public class HeadsUpTouchHelper implements Gefingerpoken {
                 mInitialTouchY = y;
                 mInitialTouchX = x;
                 setTrackingHeadsUp(false);
-                ExpandableView child = mStackScroller.getChildAtRawPosition(x, y);
+                View child = mStackScroller.getChildAtRawPosition(x, y);
                 if (child == null && y < mNotificationsTopPadding) {
                     // We should also allow drags from the margin above the heads up
                     child = mStackScroller.getChildAtRawPosition(x, y + mNotificationsTopPadding);

@@ -16,6 +16,8 @@
 
 package com.android.systemui;
 
+import com.dingjun.debug.Debug;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
@@ -230,6 +232,7 @@ public class SwipeHelper implements Gefingerpoken {
                 mDragging = false;
                 mLongPressSent = false;
                 mCurrView = mCallback.getChildAtPosition(ev);
+                Debug.d("mCurrView drag = " + mCurrView);
                 mVelocityTracker.clear();
                 if (mCurrView != null) {
                     mCurrAnimView = mCallback.getChildContentView(mCurrView);
@@ -262,6 +265,7 @@ public class SwipeHelper implements Gefingerpoken {
 
             case MotionEvent.ACTION_MOVE:
                 if (mCurrView != null && !mLongPressSent) {
+                	Debug.d("ACTION MOVE mCurrView drag = " + mCurrView);
                     mVelocityTracker.addMovement(ev);
                     float pos = getPos(ev);
                     float delta = pos - mInitialTouchPos;

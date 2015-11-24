@@ -40,8 +40,8 @@ import com.android.systemui.statusbar.policy.ScrollAdapter;
 
 public class ExpandHelper implements Gefingerpoken {
     public interface Callback {
-        ExpandableView getChildAtRawPosition(float x, float y);
-        ExpandableView getChildAtPosition(float x, float y);
+    	View getChildAtRawPosition(float x, float y);
+        View getChildAtPosition(float x, float y);
         boolean canChildBeExpanded(View v);
         void setUserExpandedChild(View v, boolean userExpanded);
         void setUserLockedChild(View v, boolean userLocked);
@@ -92,7 +92,7 @@ public class ExpandHelper implements Gefingerpoken {
     private ViewScaler mScaler;
     private ObjectAnimator mScaleAnimation;
     private boolean mEnabled = true;
-    private ExpandableView mResizedView;
+    private View mResizedView;
     private float mCurrentHeight;
 
     private int mSmallSize;
@@ -112,7 +112,7 @@ public class ExpandHelper implements Gefingerpoken {
         public boolean onScaleBegin(ScaleGestureDetector detector) {
             if (DEBUG_SCALE) Log.v(TAG, "onscalebegin()");
 
-            startExpanding(mResizedView, STRETCH);
+//            startExpanding(mResizedView, STRETCH);
             return mExpanding;
         }
 
@@ -197,8 +197,8 @@ public class ExpandHelper implements Gefingerpoken {
         return out;
     }
 
-    private ExpandableView findView(float x, float y) {
-        ExpandableView v;
+    private View findView(float x, float y) {
+        View v;
         if (mEventSource != null) {
             int[] location = new int[2];
             mEventSource.getLocationOnScreen(location);
@@ -286,7 +286,7 @@ public class ExpandHelper implements Gefingerpoken {
                         xspan > mSGD.getCurrentSpanY() && !mExpanding) {
                     // detect a vertical pulling gesture with fingers somewhat separated
                     if (DEBUG_SCALE) Log.v(TAG, "got pull gesture (xspan=" + xspan + "px)");
-                    startExpanding(mResizedView, PULL);
+//                    startExpanding(mResizedView, PULL);
                     mWatchingForPull = false;
                 }
                 if (mWatchingForPull) {
@@ -294,13 +294,14 @@ public class ExpandHelper implements Gefingerpoken {
                     if (yDiff > mTouchSlop) {
                         if (DEBUG) Log.v(TAG, "got venetian gesture (dy=" + yDiff + "px)");
                         mWatchingForPull = false;
-                        if (mResizedView != null && !isFullyExpanded(mResizedView)) {
-                            if (startExpanding(mResizedView, BLINDS)) {
-                                mLastMotionY = ev.getRawY();
-                                mInitialTouchY = ev.getRawY();
-                                mHasPopped = false;
-                            }
-                        }
+//                        if (mResizedView != null && !isFullyExpanded(mResizedView)) 
+//                        {
+//                            if (startExpanding(mResizedView, BLINDS)) {
+//                                mLastMotionY = ev.getRawY();
+//                                mInitialTouchY = ev.getRawY();
+//                                mHasPopped = false;
+//                            }
+//                        }
                     }
                 }
                 break;
@@ -417,13 +418,13 @@ public class ExpandHelper implements Gefingerpoken {
                     if (yDiff > mTouchSlop) {
                         if (DEBUG) Log.v(TAG, "got venetian gesture (dy=" + yDiff + "px)");
                         mWatchingForPull = false;
-                        if (mResizedView != null && !isFullyExpanded(mResizedView)) {
-                            if (startExpanding(mResizedView, BLINDS)) {
-                                mInitialTouchY = ev.getRawY();
-                                mLastMotionY = ev.getRawY();
-                                mHasPopped = false;
-                            }
-                        }
+//                        if (mResizedView != null && !isFullyExpanded(mResizedView)) {
+//                            if (startExpanding(mResizedView, BLINDS)) {
+//                                mInitialTouchY = ev.getRawY();
+//                                mLastMotionY = ev.getRawY();
+//                                mHasPopped = false;
+//                            }
+//                        }
                     }
                 }
                 if (mExpanding && 0 != (mExpansionStyle & BLINDS)) {

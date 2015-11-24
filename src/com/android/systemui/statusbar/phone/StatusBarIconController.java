@@ -44,6 +44,7 @@ import com.android.systemui.statusbar.SignalClusterView;
 import com.android.systemui.statusbar.StatusBarIconView;
 import com.android.systemui.tuner.TunerService;
 import com.android.systemui.tuner.TunerService.Tunable;
+import com.dingjun.debug.Debug;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -191,10 +192,13 @@ public class StatusBarIconController implements Tunable {
     public void updateNotificationIcons(NotificationData notificationData) {
         final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 mIconSize + 2*mIconHPadding, mPhoneStatusBar.getStatusBarHeight());
-
+        
+        Debug.d("updateNotificationIcons = " + notificationData);
+        
         ArrayList<NotificationData.Entry> activeNotifications =
                 notificationData.getActiveNotifications();
         final int N = activeNotifications.size();
+        Debug.d("activeNotifications.size() = " + N);
         ArrayList<StatusBarIconView> toShow = new ArrayList<>(N);
 
         // Filter out ambient notifications and notification children.
@@ -204,9 +208,9 @@ public class StatusBarIconController implements Tunable {
                     && !NotificationData.showNotificationEvenIfUnprovisioned(ent.notification)) {
                 continue;
             }
-            if (!PhoneStatusBar.isTopLevelChild(ent)) {
-                continue;
-            }
+//            if (!PhoneStatusBar.isTopLevelChild(ent)) {
+//                continue;
+//            }
             toShow.add(ent.icon);
         }
 
@@ -220,12 +224,14 @@ public class StatusBarIconController implements Tunable {
 
         final int toRemoveCount = toRemove.size();
         for (int i = 0; i < toRemoveCount; i++) {
+        	Debug.d("updateNotificationIcons removeView " + toRemove.get(i));
             mNotificationIcons.removeView(toRemove.get(i));
         }
 
         for (int i=0; i<toShow.size(); i++) {
             View v = toShow.get(i);
             if (v.getParent() == null) {
+            	Debug.d("updateNotificationIcons addView = " + v);
                 mNotificationIcons.addView(v, i, params);
             }
         }
@@ -239,6 +245,7 @@ public class StatusBarIconController implements Tunable {
                 continue;
             }
             mNotificationIcons.removeView(expected);
+            Debug.d("updateNotificationIcons expected = " + expected);
             mNotificationIcons.addView(expected, i);
         }
 
