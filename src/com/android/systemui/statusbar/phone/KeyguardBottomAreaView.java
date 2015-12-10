@@ -43,11 +43,13 @@ import android.telecom.TelecomManager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -63,6 +65,7 @@ import com.android.systemui.statusbar.KeyguardIndicationController;
 import com.android.systemui.statusbar.policy.AccessibilityController;
 import com.android.systemui.statusbar.policy.FlashlightController;
 import com.android.systemui.statusbar.policy.PreviewInflater;
+import com.dingjun.debug.Debug;
 
 import static android.view.accessibility.AccessibilityNodeInfo.ACTION_CLICK;
 import static android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
@@ -87,7 +90,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
     private static final int DOZE_ANIMATION_ELEMENT_DURATION = 250;
     private static final long TRANSIENT_FP_ERROR_TIMEOUT = 1300;
 
-    private KeyguardAffordanceView mCameraImageView;
+    private Button mCameraImageView;
     private KeyguardAffordanceView mLeftAffordanceView;
     private LockIcon mLockIcon;
     private TextView mIndicationText;
@@ -187,7 +190,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         super.onFinishInflate();
         mLockPatternUtils = new LockPatternUtils(mContext);
         mPreviewContainer = (ViewGroup) findViewById(R.id.preview_container);
-        mCameraImageView = (KeyguardAffordanceView) findViewById(R.id.camera_button);
+        mCameraImageView = (Button) findViewById(R.id.camera_button);
         mLeftAffordanceView = (KeyguardAffordanceView) findViewById(R.id.left_button);
         mLockIcon = (LockIcon) findViewById(R.id.lock_icon);
         mIndicationText = (TextView) findViewById(R.id.keyguard_indication_text);
@@ -207,10 +210,23 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         initAccessibility();
     }
 
-    private void initAccessibility() {
-        mLockIcon.setAccessibilityDelegate(mAccessibilityDelegate);
-        mLeftAffordanceView.setAccessibilityDelegate(mAccessibilityDelegate);
-        mCameraImageView.setAccessibilityDelegate(mAccessibilityDelegate);
+    
+    @Override
+	public boolean onInterceptTouchEvent(MotionEvent ev) {
+    	Debug.d(TAG + " onInterceptTouchEvent ev " + ev);
+		return super.onInterceptTouchEvent(ev);
+	}
+
+	@Override
+	public boolean onTouchEvent(MotionEvent arg0) {
+		Debug.d(TAG + " onTouchEvent ev " + arg0);
+		return super.onTouchEvent(arg0);
+	}
+
+	private void initAccessibility() {
+//        mLockIcon.setAccessibilityDelegate(mAccessibilityDelegate);
+//        mLeftAffordanceView.setAccessibilityDelegate(mAccessibilityDelegate);
+//        mCameraImageView.setAccessibilityDelegate(mAccessibilityDelegate);
     }
 
     @Override
@@ -262,7 +278,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         boolean secure = mLockPatternUtils.isSecure(KeyguardUpdateMonitor.getCurrentUser());
         return (secure && !canSkipBouncer) ? SECURE_CAMERA_INTENT : INSECURE_CAMERA_INTENT;
     }
-
+    
     private void updateCameraVisibility() {
         if (mCameraImageView == null) {
             // Things are not set up yet; reply hazy, ask again later
@@ -331,7 +347,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         KeyguardUpdateMonitor.getInstance(mContext).registerCallback(mUpdateMonitorCallback);
     }
 
-    @Override
+	@Override
     public void onStateChanged(boolean accessibilityEnabled, boolean touchExplorationEnabled) {
         mCameraImageView.setClickable(touchExplorationEnabled);
         mLeftAffordanceView.setClickable(touchExplorationEnabled);
@@ -342,6 +358,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
 
     @Override
     public void onClick(View v) {
+    	Debug.d(TAG + " onClick v = " + v + " id = " + v.getId());
         if (v == mCameraImageView) {
             launchCamera();
         } else if (v == mLeftAffordanceView) {
@@ -411,6 +428,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
     }
 
     public void launchCamera() {
+    	Debug.d(TAG + " launchCamera");
         final Intent intent = getCameraIntent();
         boolean wouldLaunchResolverActivity = PreviewInflater.wouldLaunchResolverActivity(
                 mContext, intent, KeyguardUpdateMonitor.getCurrentUser());
@@ -515,7 +533,11 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         return mLeftAffordanceView;
     }
 
-    public KeyguardAffordanceView getRightView() {
+//    public KeyguardAffordanceView getRightView() {
+//        return mCameraImageView;
+//    }
+    
+    public View getRightView() {
         return mCameraImageView;
     }
 

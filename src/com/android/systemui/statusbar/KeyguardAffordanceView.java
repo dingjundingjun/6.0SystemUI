@@ -36,9 +36,11 @@ import android.view.ViewAnimationUtils;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.widget.ImageView;
+
 import com.android.systemui.R;
 import com.android.systemui.statusbar.phone.KeyguardAffordanceHelper;
 import com.android.systemui.statusbar.phone.PhoneStatusBar;
+import com.dingjun.debug.Debug;
 
 /**
  * An ImageView which does not have overlapping renderings commands and therefore does not need a
@@ -503,9 +505,12 @@ public class KeyguardAffordanceView extends ImageView {
 
     @Override
     public boolean performClick() {
+    	
         if (isClickable()) {
+        	Debug.d("KeyguardAfforddanceView performClick");
             return super.performClick();
         } else {
+        	Debug.d("KeyguardAfforddanceView performClick return false");
             return false;
         }
     }

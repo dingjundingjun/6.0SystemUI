@@ -72,6 +72,7 @@ import com.android.systemui.statusbar.phone.PhoneStatusBar;
 import com.android.systemui.statusbar.phone.ScrimController;
 import com.android.systemui.statusbar.phone.StatusBarKeyguardViewManager;
 import com.android.systemui.statusbar.phone.StatusBarWindowManager;
+import com.dingjun.debug.Debug;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -184,6 +185,7 @@ public class KeyguardViewMediator extends SystemUI {
     /** The stream type that the lock sounds are tied to. */
     private int mUiSoundsStreamType;
 
+    /**闹钟服务*/
     private AlarmManager mAlarmManager;
     private AudioManager mAudioManager;
     private StatusBarManager mStatusBarManager;
@@ -200,7 +202,9 @@ public class KeyguardViewMediator extends SystemUI {
     private IWindowManager mWM;
 
 
-    /** TrustManager for letting it know when we change visibility */
+    /** TrustManager for letting it know when we change visibility 
+     * 授权服务
+     * */
     private TrustManager mTrustManager;
 
     /** SearchManager for determining whether or not search assistant is available */
@@ -567,7 +571,7 @@ public class KeyguardViewMediator extends SystemUI {
     private void setupLocked() {
         mPM = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
         mWM = WindowManagerGlobal.getWindowManagerService();
-        mTrustManager = (TrustManager) mContext.getSystemService(Context.TRUST_SERVICE);
+        mTrustManager = (TrustManager) mContext.getSystemService(Context.TRUST_SERVICE);    
 
         mShowKeyguardWakeLock = mPM.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "show keyguard");
         mShowKeyguardWakeLock.setReferenceCounted(false);    //计数机制    设置为false表示不论有多少acquire，只要有一次release就释放
@@ -576,7 +580,7 @@ public class KeyguardViewMediator extends SystemUI {
 
         mKeyguardDisplayManager = new KeyguardDisplayManager(mContext);
 
-        mAlarmManager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
+        mAlarmManager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);    
 
         mUpdateMonitor = KeyguardUpdateMonitor.getInstance(mContext);
 
@@ -631,6 +635,7 @@ public class KeyguardViewMediator extends SystemUI {
         synchronized (this) {
             setupLocked();
         }
+        Debug.d(TAG + " " + Thread.currentThread().getStackTrace()[0].getMethodName());
         putComponent(KeyguardViewMediator.class, this);
     }
 
@@ -638,6 +643,7 @@ public class KeyguardViewMediator extends SystemUI {
      * Let us know that the system is ready after startup.
      */
     public void onSystemReady() {
+    	Debug.d(TAG + " " + Thread.currentThread().getStackTrace()[0].getMethodName());
         mSearchManager = (SearchManager) mContext.getSystemService(Context.SEARCH_SERVICE);
         synchronized (this) {
             if (DEBUG) Log.d(TAG, "onSystemReady");
@@ -994,6 +1000,8 @@ public class KeyguardViewMediator extends SystemUI {
             updateInputRestrictedLocked();
         }
     }
+    
+    /**输入限制*/
     private void updateInputRestrictedLocked() {
         boolean inputRestricted = isInputRestricted();
         if (mInputRestricted != inputRestricted) {
@@ -1402,7 +1410,7 @@ public class KeyguardViewMediator extends SystemUI {
             adjustStatusBarLocked();
             userActivity();
 
-            mShowKeyguardWakeLock.release();
+            mShowKeyguardWakeLock.release();    //显示完了锁屏，必须释放wakelock
         }
         mKeyguardDisplayManager.show();
     }
@@ -1459,7 +1467,13 @@ public class KeyguardViewMediator extends SystemUI {
         }
     }
 
+    /**
+     * 锁屏消失动画
+     * @param startTime
+     * @param fadeoutDuration
+     */
     private void handleStartKeyguardExitAnimation(long startTime, long fadeoutDuration) {
+    	
         synchronized (KeyguardViewMediator.this) {
 
             if (!mHiding) {
@@ -1597,6 +1611,9 @@ public class KeyguardViewMediator extends SystemUI {
         }
     }
 
+    /**
+     * 重置锁屏等待（超时  3秒超时）
+     */
     private void resetKeyguardDonePendingLocked() {
         mKeyguardDonePending = false;
         mHandler.removeMessages(KEYGUARD_DONE_PENDING_TIMEOUT);
@@ -1644,6 +1661,7 @@ public class KeyguardViewMediator extends SystemUI {
         }
     }
 
+    /**主要设置一些callback回调*/
     private void setShowingLocked(boolean showing) {
         if (showing != mShowing) {
             mShowing = showing;

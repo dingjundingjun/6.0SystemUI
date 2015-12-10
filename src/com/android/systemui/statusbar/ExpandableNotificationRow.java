@@ -102,6 +102,21 @@ public class ExpandableNotificationRow extends ActivatableNotificationView {
     private boolean mHasExpandAction;
     private boolean mIsSystemChildExpanded;
     private boolean mIsPinned;
+    
+    //add by dingjun
+    public static int NOTIFICATION_READED = 1;
+    private String mPackageName;
+    
+    public void setPackageName(String str)
+    {
+    	mPackageName = str;
+    }
+    
+    public String getPackageName()
+    {
+    	return mPackageName;
+    }
+    
     private OnClickListener mExpandClickListener = new OnClickListener() {
         @Override
         public void onClick(View v) {

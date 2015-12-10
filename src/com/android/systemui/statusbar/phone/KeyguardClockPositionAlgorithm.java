@@ -29,7 +29,7 @@ import com.dingjun.debug.Debug;
  */
 public class KeyguardClockPositionAlgorithm {
 
-	public static final float CLOCK_POSITION_DISTANCE = 500.0f;
+	public static final float CLOCK_POSITION_DISTANCE = 800.0f;
     private static final float SLOW_DOWN_FACTOR = 0.4f;
 
     private static final float CLOCK_RUBBERBAND_FACTOR_MIN = 0.08f;
@@ -101,7 +101,7 @@ public class KeyguardClockPositionAlgorithm {
     }
 
     public void run(Result result) {
-        int y = (int) (getClockY() - mKeyguardStatusHeight / 2 + mDY);
+        int y = (int) (getClockY() - mKeyguardStatusHeight / 2 + mDY - 100);
         float clockAdjustment = getClockYExpansionAdjustment();
         float topPaddingAdjMultiplier = getTopPaddingAdjMultiplier();
         result.stackScrollerPaddingAdjustment = (int) (clockAdjustment*topPaddingAdjMultiplier);
@@ -112,11 +112,12 @@ public class KeyguardClockPositionAlgorithm {
         result.clockY = y;
         result.stackScrollerPadding = mKeyguardStatusHeight + padding;
         
-        
-        result.clockScale = getClockScale(result.stackScrollerPadding,
-                result.clockY,
-                y + getClockNotificationsPadding() + mKeyguardStatusHeight);
-        result.clockAlpha = getClockAlpha(result.clockScale);
+//        result.clockScale = getClockScale(result.stackScrollerPadding,
+//                result.clockY,
+//                y + getClockNotificationsPadding() + mKeyguardStatusHeight);
+        result.clockScale = (float) ((CLOCK_POSITION_DISTANCE + mDY/2)/CLOCK_POSITION_DISTANCE);
+//        result.clockAlpha = getClockAlpha(result.clockScale);
+        result.clockAlpha = (float) ((CLOCK_POSITION_DISTANCE + mDY)/CLOCK_POSITION_DISTANCE);
         
         Debug.d("result.clockY = " + y + " clockScale = " + result.clockScale + " clockAlpha = " + result.clockAlpha);
     }

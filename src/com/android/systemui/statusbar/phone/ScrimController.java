@@ -53,7 +53,9 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener,
     private static final int TAG_HUN_START_ALPHA = R.id.hun_scrim_alpha_start;
     private static final int TAG_HUN_END_ALPHA = R.id.hun_scrim_alpha_end;
 
+    /**下面的遮罩*/
     private final ScrimView mScrimBehind;
+    /**上面的遮罩*/
     private final ScrimView mScrimInFront;
     private final UnlockMethodCache mUnlockMethodCache;
     private final View mHeadsUpScrim;
@@ -181,6 +183,7 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener,
         return mDozeInFrontAlpha;
     }
 
+    /**只更新了下面的遮罩*/
     private void scheduleUpdate() {
         if (mUpdatePending) return;
 

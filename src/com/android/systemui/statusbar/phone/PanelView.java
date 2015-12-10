@@ -105,7 +105,7 @@ public abstract class PanelView extends FrameLayout {
     private Interpolator mFastOutSlowInInterpolator;
     private Interpolator mBounceInterpolator;
     /**显示相机和电话按钮*/
-    protected KeyguardBottomAreaView mKeyguardBottomArea;
+//    protected KeyguardBottomAreaView mKeyguardBottomArea;
 
     private boolean mPeekPending;
     private boolean mCollapseAfterPeek;
@@ -149,11 +149,16 @@ public abstract class PanelView extends FrameLayout {
     }
 
     abstract public void setYd(float y);
+    /**生成毛玻璃背景*/
+    abstract public void handleBlurBG();
+    /**释放毛玻璃背景*/
+    abstract public void freeBlurBG();
     
     private void schedulePeek() {
         mPeekPending = true;
         long timeout = ViewConfiguration.getTapTimeout();
-        this.setYd(200);
+//        handleBlurBG();
+//        this.setYd(100);
 //        postOnAnimationDelayed(mPeekRunnable, timeout);
 //        notifyBarPanelExpansionChanged();
     }
@@ -546,17 +551,21 @@ public abstract class PanelView extends FrameLayout {
 		final float x = event.getX(pointerIndex);
 		final float y = event.getY(pointerIndex);
 
-      switch (event.getActionMasked()) {
-          case MotionEvent.ACTION_DOWN:
-              mTouchStartedInEmptyArea = !isInContentBounds(x, y);
-              if(mTouchStartedInEmptyArea)
-              {
-            	  Debug.d("return true");
-            	  return true;
-              }
-              break;
-      }
-        return false;
+//      switch (event.getActionMasked()) {
+//          case MotionEvent.ACTION_DOWN:
+//        	  boolean superOnTouch = super.onInterceptTouchEvent(event);
+//        	  Debug.d("11111111111111111superOnTouch = " + superOnTouch);
+//              mTouchStartedInEmptyArea = !isInContentBounds(x, y);
+//              if(mTouchStartedInEmptyArea)
+//              {
+//            	  Debug.d("return true");
+//            	  return true;
+//              }
+//              break;
+//      }
+      Debug.d("PanelView onIntertouch return false");
+      return super.onInterceptTouchEvent(event);
+//      return false;
     }
 
     /**
@@ -673,48 +682,48 @@ public abstract class PanelView extends FrameLayout {
             return;
         }
         mOverExpandedBeforeFling = getOverExpansionAmount() > 0f;
-        ValueAnimator animator = createHeightAnimator(target);
+//        ValueAnimator animator = createHeightAnimator(target);
         if (expand) {
             if (expandBecauseOfFalsing) {
                 vel = 0;
             }
-            mFlingAnimationUtils.apply(animator, mExpandedHeight, target, vel, getHeight());
-            if (expandBecauseOfFalsing) {
-                animator.setDuration(350);
-            }
+//            mFlingAnimationUtils.apply(animator, mExpandedHeight, target, vel, getHeight());
+//            if (expandBecauseOfFalsing) {
+//                animator.setDuration(350);
+//            }
         } else {
-            mFlingAnimationUtils.applyDismissing(animator, mExpandedHeight, target, vel,
-                    getHeight());
+//            mFlingAnimationUtils.applyDismissing(animator, mExpandedHeight, target, vel,
+//                    getHeight());
 
             // Make it shorter if we run a canned animation
             if (vel == 0) {
-                animator.setDuration((long)
-                        (animator.getDuration() * getCannedFlingDurationFactor()
-                                / collapseSpeedUpFactor));
+//                animator.setDuration((long)
+//                        (animator.getDuration() * getCannedFlingDurationFactor()
+//                                / collapseSpeedUpFactor));
             }
         }
-        animator.addListener(new AnimatorListenerAdapter() {
-            private boolean mCancelled;
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-                mCancelled = true;
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                if (clearAllExpandHack && !mCancelled) {
-                    setExpandedHeightInternal(getMaxPanelHeight());
-                }
-                mHeightAnimator = null;
-                if (!mCancelled) {
-                    notifyExpandingFinished();
-                }
-                notifyBarPanelExpansionChanged();
-            }
-        });
-        mHeightAnimator = animator;
-        animator.start();
+//        animator.addListener(new AnimatorListenerAdapter() {
+//            private boolean mCancelled;
+//
+//            @Override
+//            public void onAnimationCancel(Animator animation) {
+//                mCancelled = true;
+//            }
+//
+//            @Override
+//            public void onAnimationEnd(Animator animation) {
+//                if (clearAllExpandHack && !mCancelled) {
+//                    setExpandedHeightInternal(getMaxPanelHeight());
+//                }
+//                mHeightAnimator = null;
+//                if (!mCancelled) {
+//                    notifyExpandingFinished();
+//                }
+//                notifyBarPanelExpansionChanged();
+//            }
+//        });
+//        mHeightAnimator = animator;
+//        animator.start();
     }
 
     @Override
@@ -728,6 +737,7 @@ public abstract class PanelView extends FrameLayout {
     }
 
     public void setExpandedHeight(float height) {
+    	new Exception().printStackTrace();
         if (DEBUG) logf("setExpandedHeight(%.1f)", height);
         setExpandedHeightInternal(height + getOverExpansionPixels());
     }
@@ -745,18 +755,18 @@ public abstract class PanelView extends FrameLayout {
     }
 
     protected void requestPanelHeightUpdate() {
-        float currentMaxPanelHeight = getMaxPanelHeight();
-
-        // If the user isn't actively poking us, let's update the height
-        if ((!mTracking || isTrackingBlocked())
-                && mHeightAnimator == null
-                && !isFullyCollapsed()
-                && currentMaxPanelHeight != mExpandedHeight
-                && !mPeekPending
-                && mPeekAnimator == null
-                && !mPeekTouching) {
-            setExpandedHeight(currentMaxPanelHeight);
-        }
+//        float currentMaxPanelHeight = getMaxPanelHeight();
+//
+//        // If the user isn't actively poking us, let's update the height
+//        if ((!mTracking || isTrackingBlocked())
+//                && mHeightAnimator == null
+//                && !isFullyCollapsed()
+//                && currentMaxPanelHeight != mExpandedHeight
+//                && !mPeekPending
+//                && mPeekAnimator == null
+//                && !mPeekTouching) {
+//            setExpandedHeight(currentMaxPanelHeight);
+//        }
     }
 
     public void setExpandedHeightInternal(float h) {
@@ -976,44 +986,45 @@ public abstract class PanelView extends FrameLayout {
      */
     private void startUnlockHintAnimationPhase1(final Runnable onAnimationFinished) {
         float target = Math.max(0, getMaxPanelHeight() - mHintDistance);
-        ValueAnimator animator = createHeightAnimator(target);
-        animator.setDuration(250);
-        animator.setInterpolator(mFastOutSlowInInterpolator);
-        animator.addListener(new AnimatorListenerAdapter() {
-            private boolean mCancelled;
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-                mCancelled = true;
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                if (mCancelled) {
-                    mHeightAnimator = null;
-                    onAnimationFinished.run();
-                } else {
-                    startUnlockHintAnimationPhase2(onAnimationFinished);
-                }
-            }
-        });
-        animator.start();
-        mHeightAnimator = animator;
-        mKeyguardBottomArea.getIndicationView().animate()
-                .translationY(-mHintDistance)
-                .setDuration(250)
-                .setInterpolator(mFastOutSlowInInterpolator)
-                .withEndAction(new Runnable() {
-                    @Override
-                    public void run() {
-                        mKeyguardBottomArea.getIndicationView().animate()
-                                .translationY(0)
-                                .setDuration(450)
-                                .setInterpolator(mBounceInterpolator)
-                                .start();
-                    }
-                })
-                .start();
+//        ValueAnimator animator = createHeightAnimator(target);
+//        animator.setDuration(250);
+//        animator.setInterpolator(mFastOutSlowInInterpolator);
+//        animator.addListener(new AnimatorListenerAdapter() {
+//            private boolean mCancelled;
+//
+//            @Override
+//            public void onAnimationCancel(Animator animation) {
+//                mCancelled = true;
+//            }
+//
+//            @Override
+//            public void onAnimationEnd(Animator animation) {
+//                if (mCancelled) {
+//                    mHeightAnimator = null;
+//                    onAnimationFinished.run();
+//                } else {
+//                    startUnlockHintAnimationPhase2(onAnimationFinished);
+//                }
+//            }
+//        });
+//        animator.start();
+//        mHeightAnimator = animator;
+        mHeightAnimator = null;
+//        mKeyguardBottomArea.getIndicationView().animate()
+//                .translationY(-mHintDistance)
+//                .setDuration(250)
+//                .setInterpolator(mFastOutSlowInInterpolator)
+//                .withEndAction(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        mKeyguardBottomArea.getIndicationView().animate()
+//                                .translationY(0)
+//                                .setDuration(450)
+//                                .setInterpolator(mBounceInterpolator)
+//                                .start();
+//                    }
+//                })
+//                .start();
     }
 
     /**

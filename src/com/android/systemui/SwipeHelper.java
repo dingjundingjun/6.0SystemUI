@@ -259,7 +259,6 @@ public class SwipeHelper implements Gefingerpoken {
                         }
                         mHandler.postDelayed(mWatchLongPress, mLongPressTimeout);
                     }
-
                 }
                 break;
 
@@ -269,12 +268,14 @@ public class SwipeHelper implements Gefingerpoken {
                     mVelocityTracker.addMovement(ev);
                     float pos = getPos(ev);
                     float delta = pos - mInitialTouchPos;
+                    Debug.d("ACTION_MOVE delta = " + delta + " mPagingTouchSlop = " + mPagingTouchSlop + " mSwipeDirection = " + mSwipeDirection);
                     if (Math.abs(delta) > mPagingTouchSlop) {
                         mCallback.onBeginDrag(mCurrView);
                         mDragging = true;
                         mInitialTouchPos = getPos(ev) - getTranslation(mCurrAnimView);
 
                         removeLongPressCallback();
+                        Debug.d("ACTION_MOVE mDragging = true");
                     }
                 }
 

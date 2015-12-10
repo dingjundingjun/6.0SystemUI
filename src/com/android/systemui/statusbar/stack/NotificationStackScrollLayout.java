@@ -20,6 +20,7 @@ import android.annotation.Nullable;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.drawable.GradientDrawable.Orientation;
@@ -31,6 +32,7 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.ViewTreeObserver;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
@@ -236,6 +238,8 @@ public class NotificationStackScrollLayout extends LinearLayout
     private NotificationOverflowContainer mOverflowContainer;
     private final ArrayList<Pair<ExpandableNotificationRow, Boolean>> mTmpList = new ArrayList<>();
 
+    //add by dingjun
+    private int mLastState;
     public NotificationStackScrollLayout(Context context) {
         this(context, null);
     }
@@ -868,6 +872,7 @@ public class NotificationStackScrollLayout extends LinearLayout
     public boolean onTouchEvent(MotionEvent ev) {
         boolean isCancelOrUp = ev.getActionMasked() == MotionEvent.ACTION_CANCEL
                 || ev.getActionMasked()== MotionEvent.ACTION_UP;
+        Debug.d("NotificationStackScroolLayout onTouch " + ev);
         if (mDelegateToScrollView) {
             if (isCancelOrUp) {
                 mDelegateToScrollView = false;
@@ -900,6 +905,8 @@ public class NotificationStackScrollLayout extends LinearLayout
                 && !mOnlyScrollingInThisMotion) {
             horizontalSwipeWantsIt = mSwipeHelper.onTouchEvent(ev);
         }
+        boolean returnData = horizontalSwipeWantsIt || scrollerWantsIt || expandWantsIt;
+        Debug.d("onTouch return  = " + returnData + " " + Thread.currentThread().getStackTrace()[2].getLineNumber());
         return horizontalSwipeWantsIt || scrollerWantsIt || expandWantsIt || super.onTouchEvent(ev);
     }
 
@@ -1640,6 +1647,9 @@ public class NotificationStackScrollLayout extends LinearLayout
                 && !mOnlyScrollingInThisMotion) {
             swipeWantsIt = mSwipeHelper.onInterceptTouchEvent(ev);
         }
+        boolean returnData = swipeWantsIt || scrollWantsIt || expandWantsIt;
+        Debug.d("NotificationStackScroolLayout onInterceptTouchEvent " + ev);
+        Debug.d("NotificationStackScroolLayout returnData = " + returnData);
         return swipeWantsIt || scrollWantsIt || expandWantsIt || super.onInterceptTouchEvent(ev);
     }
 
@@ -2788,6 +2798,98 @@ public class NotificationStackScrollLayout extends LinearLayout
         requestAnimateEverything();
     }
 
+    /**
+     * 锁屏以后，隐藏通知
+     * */
+    public void hideShadeModeNotification(int state)
+    {
+//    	if(state == mLastState)
+//    	{
+//    		return;
+//    	}
+    	mLastState = state;
+    	int childCount = this.getChildCount();
+    	for(int i = 0;i < childCount;i++)
+    	{
+    		View childView = this.getChildAt(i);
+    		if(!(childView instanceof LinearLayout))
+    		{
+    			continue;
+    		}
+    		
+    		Debug.d("hideShadeModeNotification child = " + childView);
+    		int count = ((ViewGroup)childView).getChildCount();
+    		boolean canShow = false;
+    		for(int j = 0;j < count;j++)
+    		{
+    			View cchildView = ((ViewGroup)childView).getChildAt(j);
+    			if(cchildView instanceof LinearLayout)
+    			{
+    				continue;
+    			}
+    			if(cchildView instanceof ExpandableNotificationRow)
+    			{
+    				String packStr = ((ExpandableNotificationRow)cchildView).getPackageName();
+    				Debug.d("packStr = " + packStr);
+    				if(packStr.contains("android"))
+    				{
+    					canShow = true;
+    					continue;
+    				}
+    			}
+    			if(cchildView.getTag() != null && ((int)cchildView.getTag()) == ExpandableNotificationRow.NOTIFICATION_READED)
+        		{
+    				Debug.d("cchildView tag == 1 + " + cchildView);
+    				cchildView.setVisibility(View.GONE);
+        		}
+    			else
+    			{
+    				Debug.d("cchildView tag != 1 + " + cchildView);
+    				canShow = true;
+    			}
+    		}
+    		if(canShow)
+    		{
+    			childView.setVisibility(View.VISIBLE);
+    		}
+    		else
+    		{
+    			childView.setVisibility(View.GONE);
+    		}
+    	}
+    }
+    
+    /**
+     * 显示左右通知
+     */
+    public void showShadeModeNotification(int state)
+    {
+//    	if(state == mLastState)
+//    	{
+//    		return;
+//    	}
+    	mLastState = state;
+    	int childCount = this.getChildCount();
+    	for(int i = 0;i < childCount;i++)
+    	{
+    		View childView = this.getChildAt(i);
+    		Debug.d("showShadeModeNotification child = " + childView);
+    		if(!(childView instanceof LinearLayout))
+    		{
+    			continue;
+    		}
+    		int count = ((ViewGroup)childView).getChildCount();
+    		childView.setVisibility(View.VISIBLE);
+    		for(int j = 0;j < count;j++)
+    		{
+    			View cchildView = ((ViewGroup)childView).getChildAt(j);
+    			Debug.d("showShadeModeNotification child child = " + cchildView);
+    			cchildView.setTag(ExpandableNotificationRow.NOTIFICATION_READED);
+    			cchildView.setVisibility(View.VISIBLE);
+    		}
+    	}
+    }
+    
     private void requestAnimateEverything() {
         if (mIsExpanded && mAnimationsEnabled) {
             mEverythingNeedsAnimation = true;

@@ -1301,7 +1301,6 @@ public abstract class BaseStatusBar extends SystemUI implements
                 row.setUserExpanded(userExpanded);
             }
         } else {
-        	
             // create the row view
 //            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
 //                    Context.LAYOUT_INFLATER_SERVICE);
@@ -1323,11 +1322,16 @@ public abstract class BaseStatusBar extends SystemUI implements
 					row = (ExpandableNotificationRow) inflater.inflate(
 							R.layout.status_bar_notification_row,
 							null);
+					row.setPackageName(entry.notification.getPackageName());
 					Log.d("dingjun","temp_entry parent = " + temp_entry.parent);
 					Log.d("dingjun","temp_entry = " + temp_entry);
 					entry.parent = temp_entry.parent;
 					temp_entry.parent.addView(row);
 					isExsitPackage = true;
+					if(mState != StatusBarState.KEYGUARD && mState != StatusBarState.SHADE_LOCKED)
+					{
+						row.setTag(ExpandableNotificationRow.NOTIFICATION_READED);
+					}
 					Log.d("dingjun","has the same Package already = " + temp_entry.notification.getPackageName());
 					break;
 				}
@@ -1367,6 +1371,11 @@ public abstract class BaseStatusBar extends SystemUI implements
 				null, false);
 				entry.parent.addView(row);
 				row.setExpansionLogger(this, entry.notification.getKey());
+				row.setPackageName(entry.notification.getPackageName());
+				if(mState != StatusBarState.KEYGUARD && mState != StatusBarState.SHADE_LOCKED)
+				{
+					row.setTag(ExpandableNotificationRow.NOTIFICATION_READED);
+				}
 				Log.d("dingjun","app_label = " + app_label.getText().toString());
             }
             row.setExpansionLogger(this, entry.notification.getKey());
@@ -1556,7 +1565,6 @@ public abstract class BaseStatusBar extends SystemUI implements
         }
         row.setUserLocked(userLocked);
         row.setStatusBarNotification(entry.notification);
-
         return true;
     }
 
@@ -1827,6 +1835,7 @@ public abstract class BaseStatusBar extends SystemUI implements
 
         int visibleNotifications = 0;
         boolean onKeyguard = mState == StatusBarState.KEYGUARD;
+        onKeyguard = false;
         for (int i = 0; i < N; i++) {
             NotificationData.Entry entry = activeNotifications.get(i);
             if (onKeyguard) {

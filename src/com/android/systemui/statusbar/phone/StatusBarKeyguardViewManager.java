@@ -30,6 +30,7 @@ import com.android.internal.widget.LockPatternUtils;
 import com.android.keyguard.KeyguardUpdateMonitor;
 import com.android.keyguard.ViewMediatorCallback;
 import com.android.systemui.statusbar.CommandQueue;
+import com.dingjun.debug.Debug;
 
 import static com.android.keyguard.KeyguardHostView.OnDismissAction;
 
@@ -112,11 +113,12 @@ public class StatusBarKeyguardViewManager {
      */
     private void showBouncerOrKeyguard() {
         if (mBouncer.needsFullscreenBouncer()) {
-
+        	Debug.d("showBouncerOrKeyguard needsFullscreenBouncer");
             // The keyguard might be showing (already). So we need to hide it.
             mPhoneStatusBar.hideKeyguard();
             mBouncer.show(true /* resetSecuritySelection */);
         } else {
+        	Debug.d("showBouncerOrKeyguard != needsFullscreenBouncer");
             mPhoneStatusBar.showKeyguard();
             mBouncer.hide(false /* destroyView */);
             mBouncer.prepare();
@@ -125,6 +127,7 @@ public class StatusBarKeyguardViewManager {
 
     private void showBouncer() {
         if (mShowing) {
+        	Debug.d(" " + Thread.currentThread().getStackTrace()[2].getLineNumber());
             mBouncer.show(false /* resetSecuritySelection */);
         }
         updateStates();
@@ -323,6 +326,7 @@ public class StatusBarKeyguardViewManager {
      */
     public void dismiss() {
         if (mDeviceInteractive || mDeviceWillWakeUp) {
+        	Debug.d("mDeviceInteractive " + mDeviceInteractive + " mDeviceWillWakeUp = " + mDeviceWillWakeUp);
             showBouncer();
         }
     }
@@ -377,6 +381,7 @@ public class StatusBarKeyguardViewManager {
     };
 
     private void updateStates() {
+    	Debug.d(" " + Thread.currentThread().getStackTrace()[2].getLineNumber());
         int vis = mContainer.getSystemUiVisibility();
         boolean showing = mShowing;
         boolean occluded = mOccluded;

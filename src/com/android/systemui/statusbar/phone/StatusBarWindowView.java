@@ -40,6 +40,7 @@ import com.android.systemui.statusbar.BaseStatusBar;
 import com.android.systemui.statusbar.DragDownHelper;
 import com.android.systemui.statusbar.StatusBarState;
 import com.android.systemui.statusbar.stack.NotificationStackScrollLayout;
+import com.dingjun.debug.Debug;
 
 
 public class StatusBarWindowView extends FrameLayout {
@@ -215,7 +216,7 @@ public class StatusBarWindowView extends FrameLayout {
                 && mStackScrollLayout.getVisibility() == View.VISIBLE
                 && mService.getBarState() == StatusBarState.KEYGUARD
                 && !mService.isBouncerShowing()) {
-            intercept = mDragDownHelper.onInterceptTouchEvent(ev);
+//            intercept = mDragDownHelper.onInterceptTouchEvent(ev);
             // wake up on a touch down event, if dozing
             if (ev.getActionMasked() == MotionEvent.ACTION_DOWN) {
                 mService.wakeUpIfDozing(ev.getEventTime(), ev);
@@ -237,8 +238,10 @@ public class StatusBarWindowView extends FrameLayout {
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         boolean handled = false;
+        
         if (mService.getBarState() == StatusBarState.KEYGUARD) {
-            handled = mDragDownHelper.onTouchEvent(ev);
+        	
+//            handled = mDragDownHelper.onTouchEvent(ev);
         }
         if (!handled) {
             handled = super.onTouchEvent(ev);
@@ -247,6 +250,7 @@ public class StatusBarWindowView extends FrameLayout {
         if (!handled && (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL)) {
             mService.setInteracting(StatusBarManager.WINDOW_STATUS_BAR, false);
         }
+        Debug.d("handled = " + handled + " StausBarWindowView onTouchEvent ev = " + ev);
         return handled;
     }
 

@@ -49,7 +49,7 @@ public class KeyguardIndicationController {
     private static final int MSG_HIDE_TRANSIENT = 1;
 
     private final Context mContext;
-    private final KeyguardIndicationTextView mTextView;
+//    private final KeyguardIndicationTextView mTextView;
     private final IBatteryStats mBatteryInfo;
 
     private String mRestingIndication;
@@ -62,7 +62,7 @@ public class KeyguardIndicationController {
 
     public KeyguardIndicationController(Context context, KeyguardIndicationTextView textView) {
         mContext = context;
-        mTextView = textView;
+//        mTextView = textView;
 
         mBatteryInfo = IBatteryStats.Stub.asInterface(
                 ServiceManager.getService(BatteryStats.SERVICE_NAME));
@@ -73,7 +73,7 @@ public class KeyguardIndicationController {
 
     public void setVisible(boolean visible) {
         mVisible = visible;
-        mTextView.setVisibility(visible ? View.VISIBLE : View.GONE);
+//        mTextView.setVisibility(visible ? View.VISIBLE : View.GONE);
         if (visible) {
             hideTransientIndication();
             updateIndication();
@@ -133,8 +133,8 @@ public class KeyguardIndicationController {
 
     private void updateIndication() {
         if (mVisible) {
-            mTextView.switchIndication(computeIndication());
-            mTextView.setTextColor(computeColor());
+//            mTextView.switchIndication(computeIndication());
+//            mTextView.setTextColor(computeColor());
         }
     }
 

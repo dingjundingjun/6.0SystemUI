@@ -304,9 +304,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 //    StatusBarHeaderView mHeader;
     KeyguardStatusBarView mKeyguardStatusBar;
     View mKeyguardStatusView;
-    KeyguardBottomAreaView mKeyguardBottomArea;
+//    KeyguardBottomAreaView mKeyguardBottomArea;
     boolean mLeaveOpenOnKeyguardHide;
-    KeyguardIndicationController mKeyguardIndicationController;
+//    KeyguardIndicationController mKeyguardIndicationController;
 
     private boolean mKeyguardFadingAway;
     private long mKeyguardFadingAwayDelay;
@@ -368,9 +368,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 mUserSetup = userSetup;
                 if (!mUserSetup && mStatusBarView != null)
                     animateCollapseQuickSettings();
-                if (mKeyguardBottomArea != null) {
-                    mKeyguardBottomArea.setUserSetupComplete(mUserSetup);
-                }
+//                if (mKeyguardBottomArea != null) {
+//                    mKeyguardBottomArea.setUserSetupComplete(mUserSetup);
+//                }
             }
             if (mIconPolicy != null) {
                 mIconPolicy.setCurrentUserSetup(mUserSetup);
@@ -779,14 +779,14 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 //        mHeader.setActivityStarter(this);
         mKeyguardStatusBar = (KeyguardStatusBarView) mStatusBarWindow.findViewById(R.id.keyguard_header);
         mKeyguardStatusView = mStatusBarWindow.findViewById(R.id.keyguard_status_view);
-        mKeyguardBottomArea =
-                (KeyguardBottomAreaView) mStatusBarWindow.findViewById(R.id.keyguard_bottom_area);
-        mKeyguardBottomArea.setActivityStarter(this);
-        mKeyguardBottomArea.setAssistManager(mAssistManager);
-        mKeyguardIndicationController = new KeyguardIndicationController(mContext,
-                (KeyguardIndicationTextView) mStatusBarWindow.findViewById(
-                        R.id.keyguard_indication_text));
-        mKeyguardBottomArea.setKeyguardIndicationController(mKeyguardIndicationController);
+//        mKeyguardBottomArea =
+//                (KeyguardBottomAreaView) mStatusBarWindow.findViewById(R.id.keyguard_bottom_area);
+//        mKeyguardBottomArea.setActivityStarter(this);
+//        mKeyguardBottomArea.setAssistManager(mAssistManager);
+//        mKeyguardIndicationController = new KeyguardIndicationController(mContext,
+//                (KeyguardIndicationTextView) mStatusBarWindow.findViewById(
+//                        R.id.keyguard_indication_text));
+//        mKeyguardBottomArea.setKeyguardIndicationController(mKeyguardIndicationController);
 
         // set the inital view visibility
         setAreThereNotifications();
@@ -849,11 +849,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 //        }
 
         mFlashlightController = new FlashlightController(mContext);
-        mKeyguardBottomArea.setFlashlightController(mFlashlightController);
-        mKeyguardBottomArea.setPhoneStatusBar(this);
-        mKeyguardBottomArea.setUserSetupComplete(mUserSetup);
+//        mKeyguardBottomArea.setFlashlightController(mFlashlightController);
+//        mKeyguardBottomArea.setPhoneStatusBar(this);
+//        mKeyguardBottomArea.setUserSetupComplete(mUserSetup);
         mAccessibilityController = new AccessibilityController(mContext);
-        mKeyguardBottomArea.setAccessibilityController(mAccessibilityController);
+//        mKeyguardBottomArea.setAccessibilityController(mAccessibilityController);
         mNextAlarmController = new NextAlarmController(mContext);
         mKeyguardMonitor = new KeyguardMonitor(mContext);
         if (UserSwitcherController.isUserSwitcherAvailable(UserManager.get(mContext))) {
@@ -1204,6 +1204,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         addNotificationViews(shadeEntry, ranking);
         // Recalculate the position of the sliding windows and the titles.
         setAreThereNotifications();
+        
+        updateNotificationScrollGroup();
     }
 
     @Override
@@ -1267,6 +1269,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         ArrayList<Entry> activeNotifications = mNotificationData.getActiveNotifications();
         ArrayList<ExpandableNotificationRow> toShow = new ArrayList<>(activeNotifications.size());
         final int N = activeNotifications.size();
+        Debug.d("updateNotificationShade N = " + N);
         for (int i=0; i<N; i++) {
             Entry ent = activeNotifications.get(i);
             int vis = ent.notification.getNotification().visibility;
@@ -1334,6 +1337,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         for (int i=0; i<toShow.size(); i++) {
             View v = toShow.get(i);
             if (v.getParent() == null) {
+            	Debug.d("StackScrooler3 addView = " + v);
                 mStackScroller.addView(v);
             }
         }
@@ -1373,8 +1377,24 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         updateQsExpansionEnabled();
         mShadeUpdates.check();
+        updateNotificationScrollGroup();
     }
 
+    /**
+     * 更新分组，锁屏状态只显示最新通知
+     */
+    private void updateNotificationScrollGroup()
+    {
+    	if(mState == StatusBarState.KEYGUARD || mState == StatusBarState.SHADE_LOCKED)
+        {
+        	mStackScroller.hideShadeModeNotification(mState);
+        }
+        else
+        {
+        	mStackScroller.showShadeModeNotification(mState);
+        }
+    }
+    
     /**
      * Disable QS if device not provisioned.
      * If the user switcher is simple then disable QS during setup because
@@ -1433,6 +1453,14 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         if (orderChanged) {
             mStackScroller.generateChildOrderChangedEvent();
         }
+//        if(mState == StatusBarState.KEYGUARD || mState == StatusBarState.SHADE_LOCKED)
+//        {
+//        	mStackScroller.hideShadeModeNotification(mState);
+//        }
+//        else
+//        {
+//        	mStackScroller.showShadeModeNotification(mState);
+//        }
     }
 
     private boolean packageHasVisibilityOverride(String key) {
@@ -2126,6 +2154,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
 
         mExpandedVisible = true;
+        mNotificationPanel.handleBlurBG();
         if (mNavigationBarView != null)
             mNavigationBarView.setSlippery(true);
 
@@ -2255,7 +2284,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mStatusBarView.collapseAllPanels(/*animate=*/ false, false /* delayed*/,
                 1.0f /* speedUpFactor */);
 
-        mNotificationPanel.closeQs();
+//        mNotificationPanel.closeQs();
 
         mExpandedVisible = false;
         if (mNavigationBarView != null)
@@ -3366,7 +3395,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
         mHandler.removeMessages(MSG_LAUNCH_TRANSITION_TIMEOUT);
         setBarState(StatusBarState.KEYGUARD);
-        updateKeyguardState(false /* goingToFullShade */, false /* fromShadeLocked */);
+        updateKeyguardState(false /* goingToFullShade */, false /* fromShadeLocked */);    //主要处理锁屏时候一些view的显示和位置
         if (!mScreenOnFromKeyguard) {
 
             // If the screen is off already, we need to disable touch events because these might
@@ -3488,15 +3517,15 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 mDraggedDownRow = null;
             }
         } else {
-            instantCollapseNotificationPanel();
+//            instantCollapseNotificationPanel();
         }
         updateKeyguardState(staying, false /* fromShadeLocked */);
 
         // Keyguard state has changed, but QS is not listening anymore. Make sure to update the tile
         // visibilities so next time we open the panel we know the correct height already.
-        if (mQSPanel != null) {
-            mQSPanel.refreshAllTiles();
-        }
+//        if (mQSPanel != null) {
+//            mQSPanel.refreshAllTiles();
+//        }
         mHandler.removeMessages(MSG_LAUNCH_TRANSITION_TIMEOUT);
         return staying;
     }
@@ -3557,15 +3586,16 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
     private void updateKeyguardState(boolean goingToFullShade, boolean fromShadeLocked) {
         if (mState == StatusBarState.KEYGUARD) {
-            mKeyguardIndicationController.setVisible(true);
+//            mKeyguardIndicationController.setVisible(true);
             mNotificationPanel.resetViews();
             mKeyguardUserSwitcher.setKeyguard(true, fromShadeLocked);
             mStatusBarView.removePendingHideExpandedRunnables();
         } else {
-            mKeyguardIndicationController.setVisible(false);
+//            mKeyguardIndicationController.setVisible(false);
             mKeyguardUserSwitcher.setKeyguard(false,
                     goingToFullShade || mState == StatusBarState.SHADE_LOCKED || fromShadeLocked);
         }
+        //KEYGUARD 这个是普通锁屏的状态  SHADE_LOCKED这个不知道干啥
         if (mState == StatusBarState.KEYGUARD || mState == StatusBarState.SHADE_LOCKED) {
             mScrimController.setKeyguardShowing(true);
             mIconPolicy.setKeyguardShowing(true);
@@ -3595,11 +3625,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     public void updateStackScrollerState(boolean goingToFullShade) {
         if (mStackScroller == null) return;
         boolean onKeyguard = mState == StatusBarState.KEYGUARD;
-        mStackScroller.setHideSensitive(isLockscreenPublicMode(), goingToFullShade);
-        mStackScroller.setDimmed(onKeyguard, false /* animate */);
-        mStackScroller.setExpandingEnabled(!onKeyguard);
+//        mStackScroller.setHideSensitive(isLockscreenPublicMode(), goingToFullShade);
+//        mStackScroller.setDimmed(onKeyguard, false /* animate */);
+//        mStackScroller.setExpandingEnabled(!onKeyguard);
         ActivatableNotificationView activatedChild = mStackScroller.getActivatedChild();
-        mStackScroller.setActivatedChild(null);
+//        mStackScroller.setActivatedChild(null);
         if (activatedChild != null) {
             activatedChild.makeInactive(false /* animate */);
         }
@@ -3674,7 +3704,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 //        EventLogTags.writeSysuiLockscreenGesture(
 //                EventLogConstants.SYSUI_LOCKSCREEN_GESTURE_TAP_NOTIFICATION_ACTIVATE,
 //                0 /* lengthDp - N/A */, 0 /* velocityDp - N/A */);
-        mKeyguardIndicationController.showTransientIndication(R.string.notification_tap_again);
+//        mKeyguardIndicationController.showTransientIndication(R.string.notification_tap_again);
         ActivatableNotificationView previousView = mStackScroller.getActivatedChild();
         if (previousView != null) {
             previousView.makeInactive(true /* animate */);
@@ -3703,7 +3733,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     @Override
     public void onActivationReset(ActivatableNotificationView view) {
         if (view == mStackScroller.getActivatedChild()) {
-            mKeyguardIndicationController.hideTransientIndication();
+//            mKeyguardIndicationController.hideTransientIndication();
             mStackScroller.setActivatedChild(null);
         }
     }
@@ -3717,24 +3747,24 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     }
 
     public void onUnlockHintStarted() {
-        mKeyguardIndicationController.showTransientIndication(R.string.keyguard_unlock);
+//        mKeyguardIndicationController.showTransientIndication(R.string.keyguard_unlock);
     }
 
     public void onHintFinished() {
         // Delay the reset a bit so the user can read the text.
-        mKeyguardIndicationController.hideTransientIndicationDelayed(HINT_RESET_DELAY_MS);
+//        mKeyguardIndicationController.hideTransientIndicationDelayed(HINT_RESET_DELAY_MS);
     }
 
     public void onCameraHintStarted() {
-        mKeyguardIndicationController.showTransientIndication(R.string.camera_hint);
+//        mKeyguardIndicationController.showTransientIndication(R.string.camera_hint);
     }
 
     public void onVoiceAssistHintStarted() {
-        mKeyguardIndicationController.showTransientIndication(R.string.voice_hint);
+//        mKeyguardIndicationController.showTransientIndication(R.string.voice_hint);
     }
 
     public void onPhoneHintStarted() {
-        mKeyguardIndicationController.showTransientIndication(R.string.phone_hint);
+//        mKeyguardIndicationController.showTransientIndication(R.string.phone_hint);
     }
 
     public void onTrackingStopped(boolean expand) {
