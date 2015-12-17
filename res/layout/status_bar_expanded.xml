@@ -43,6 +43,7 @@
 	<LinearLayout 
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent"
+	    android:orientation="vertical"
 	    >
     <com.android.systemui.statusbar.phone.NotificationsQuickSettingsContainer
         android:layout_width="match_parent"
@@ -183,7 +184,7 @@
 		        android:id="@+id/go_to_app_tip"
 		        android:visibility="gone"
 		        android:layout_width="match_parent"
-		        android:layout_height="400dp"
+		        android:layout_height="800dp"
 		        android:background="#ffff0000"
 		        />
 	</LinearLayout>

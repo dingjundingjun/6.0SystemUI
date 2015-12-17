@@ -35,6 +35,7 @@ import com.android.internal.widget.LockPatternUtils;
 import com.android.keyguard.KeyguardSecurityContainer.SecurityCallback;
 import com.android.keyguard.KeyguardSecurityModel.SecurityMode;
 import com.android.systemui.R;
+import com.dingjun.debug.Debug;
 
 import java.io.File;
 
@@ -316,6 +317,7 @@ public class KeyguardHostView extends FrameLayout implements SecurityCallback {
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
+    	Debug.d("KeyguardHostView dispatchKeyEvent");
         if (interceptMediaKey(event)) {
             return true;
         }

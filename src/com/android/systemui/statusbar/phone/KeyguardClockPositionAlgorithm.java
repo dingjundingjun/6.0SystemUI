@@ -108,7 +108,7 @@ public class KeyguardClockPositionAlgorithm {
         int clockNotificationsPadding = getClockNotificationsPadding()
                 + result.stackScrollerPaddingAdjustment;
         int padding = y + clockNotificationsPadding;
-        Debug.d("padding = " + padding + " NotificationPadding = " + clockNotificationsPadding);
+//        Debug.d("padding = " + padding + " NotificationPadding = " + clockNotificationsPadding);
         result.clockY = y;
         result.stackScrollerPadding = mKeyguardStatusHeight + padding;
         
@@ -119,7 +119,7 @@ public class KeyguardClockPositionAlgorithm {
 //        result.clockAlpha = getClockAlpha(result.clockScale);
         result.clockAlpha = (float) ((CLOCK_POSITION_DISTANCE + mDY)/CLOCK_POSITION_DISTANCE);
         
-        Debug.d("result.clockY = " + y + " clockScale = " + result.clockScale + " clockAlpha = " + result.clockAlpha);
+//        Debug.d("result.clockY = " + y + " clockScale = " + result.clockScale + " clockAlpha = " + result.clockAlpha);
     }
 
     private float getClockScale(int notificationPadding, int clockY, int startPadding) {
@@ -144,7 +144,7 @@ public class KeyguardClockPositionAlgorithm {
     private float getClockYFraction() {
         float t = getNotificationAmountT();
         t = Math.min(t, 1.0f);
-        Debug.d("YFractionMax = " + mClockYFractionMax + " ClockYMin = " + mClockYFractionMin + " t = " + t);
+//        Debug.d("YFractionMax = " + mClockYFractionMax + " ClockYMin = " + mClockYFractionMin + " t = " + t);
         return (1 - t) * mClockYFractionMax + t * mClockYFractionMin;
     }
 
@@ -192,7 +192,7 @@ public class KeyguardClockPositionAlgorithm {
      * @return a value from 0 to 1 depending on how many notification there are
      */
     private float getNotificationAmountT() {
-    	Debug.d("mNotificationCount = " + mNotificationCount + " mMaxKeyguardNotifications = " + mMaxKeyguardNotifications + " mMoreCardNotificationAmount = " + mMoreCardNotificationAmount);
+//    	Debug.d("mNotificationCount = " + mNotificationCount + " mMaxKeyguardNotifications = " + mMaxKeyguardNotifications + " mMoreCardNotificationAmount = " + mMoreCardNotificationAmount);
         return mNotificationCount
                 / (mMaxKeyguardNotifications + mMoreCardNotificationAmount);
     }

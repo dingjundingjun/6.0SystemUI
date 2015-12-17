@@ -36,6 +36,7 @@ public class QuickSettingLayout extends LinearLayout
 		mQuickSettingGridView = (QuickSettingGridView)findViewById(R.id.qs_grid);
 		mBtnQSControl = (ImageView)findViewById(R.id.btn_qs_control);
         mBtnQSControl.setImageLevel(QS_CONTROL_EXPEND);
+        mQuickSettingGridView.collop();
     }
 	
 	public void setBar(BaseStatusBar bar)
@@ -93,6 +94,16 @@ public class QuickSettingLayout extends LinearLayout
 			return true;
 		}
 		return false;
+	}
+	
+	public void collopse()
+	{
+		mQuickSettingGridView.collop();
+	}
+	
+	public void expaned()
+	{
+		mQuickSettingGridView.expend();
 	}
 
 }

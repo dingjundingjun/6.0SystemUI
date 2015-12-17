@@ -30,6 +30,7 @@ import com.android.systemui.R;
 import com.android.systemui.keyguard.KeyguardViewMediator;
 import com.android.systemui.statusbar.BaseStatusBar;
 import com.android.systemui.statusbar.StatusBarState;
+import com.dingjun.debug.Debug;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -119,6 +120,7 @@ public class StatusBarWindowManager {
 
     private void applyFocusableFlag(State state) {
         boolean panelFocusable = state.statusBarFocusable && state.panelExpanded;
+        Debug.d("applyFocusableFlag state.statusBarFocusable = " + state.statusBarFocusable + " state.panelExpanded = " + state.panelExpanded);
         if (state.keyguardShowing && state.keyguardNeedsInput && state.bouncerShowing) {
             mLpChanged.flags &= ~WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
             mLpChanged.flags &= ~WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM;

@@ -102,7 +102,7 @@ public class BlurControlView extends FrameLayout
  
 	public void setFraction(float f)
 	{
-		Debug.d("child setBlurFraction f = " + f);
+//		Debug.d("child setBlurFraction f = " + f);
 		mBlurBkMaker.setDrawFraction(f);
 		invalidate();
 	}

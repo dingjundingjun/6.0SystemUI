@@ -93,6 +93,7 @@ public class HandleNotificationTouch {
         mPullStatusBar = (ImageView)mNotificationPanelView.findViewById(R.id.btn_status_bar_pull);
         mPhoneCallBtn = (ImageView)mNotificationPanelView.findViewById(R.id.btn_phone);
         mGoToAPPTipView = (ImageView)mNotificationPanelView.findViewById(R.id.go_to_app_tip);
+        mGoToAPPTipView.setBackgroundColor(Color.BLUE);
         mAnimateHandle = new AnimateHandle();
 	}
 	
@@ -113,6 +114,7 @@ public class HandleNotificationTouch {
   		  mNotificationClockLayout.setVisibility(View.INVISIBLE);
   		  mNotificationBottomLayout.setVisibility(View.INVISIBLE);
   		  mPullStatusBar.setVisibility(View.INVISIBLE);
+  		  mNotificationPanelView.ExpandedQS();
   		  
   		  mCameraBtn.setVisibility(View.VISIBLE);
   		  mPhoneCallBtn.setVisibility(View.VISIBLE);
@@ -128,6 +130,7 @@ public class HandleNotificationTouch {
   		  mCameraBtn.setVisibility(View.GONE);
   		  mPhoneCallBtn.setVisibility(View.GONE);
   		  mUpToUnlock.setVisibility(View.GONE);
+  		  mNotificationPanelView.resetAllView();
   	  }
   }
 	
@@ -150,7 +153,7 @@ public class HandleNotificationTouch {
 			mNotificationContainerParent.animate().cancel();
 			mLastNotificationPositionY = mNotificationContainerParent.getY();
 			mNotificationContainerInitY = y;
-			Debug.d("ACTION_DOWN mLastNotificationPositionY = " + mLastNotificationPositionY + " mNotificationContainerInitY = " + mNotificationContainerInitY);
+//			Debug.d("ACTION_DOWN mLastNotificationPositionY = " + mLastNotificationPositionY + " mNotificationContainerInitY = " + mNotificationContainerInitY);
 			if(!mNotificationPanelView.isShown())
 			{
 				mNotificationPanelView.setVisibility(View.VISIBLE);
@@ -170,12 +173,15 @@ public class HandleNotificationTouch {
 				isTouchInQuickApp = touchInQuickApp(x,y);
 				if(isTouchInQuickApp)
 				{
+					Debug.d("touchInQuickApp");
 					mGoToAPPTipView.setVisibility(View.VISIBLE);
-					mGoToAPPTipView.setY(mNotificationContainerParent.getY() + mNotificationContainerParent.getHeight());
+					float yyy = mNotificationContainerParent.getY() + mNotificationContainerParent.getHeight();
+//					mGoToAPPTipView.setY(mNotificationContainerParent.getY() + mNotificationContainerParent.getHeight());
+					mGoToAPPTipView.setY(yyy);
 				}
 				else
 				{
-					mGoToAPPTipView.setVisibility(View.GONE);
+//					mGoToAPPTipView.setVisibility(View.GONE);
 				}
 			}
 			if(isContainerParentExpanded())
@@ -185,10 +191,10 @@ public class HandleNotificationTouch {
 			break;
 		}
 		case MotionEvent.ACTION_MOVE: {
-			Debug.d("ACTION_MOVE");
+//			Debug.d("ACTION_MOVE");
 			mVTracker.addMovement(event);
 			mVTracker.computeCurrentVelocity(1000); 
-			Debug.d("vTracker y = " + mVTracker.getYVelocity());
+//			Debug.d("vTracker y = " + mVTracker.getYVelocity());
 			if(mStatusBarState == StatusBarState.KEYGUARD)
 			{
 				mNotificationPanelView.positionClockAndNotifications(y - mNotificationContainerInitY);
@@ -212,11 +218,11 @@ public class HandleNotificationTouch {
 //					+ mNotificationContainerInitY + " y = " + y + " mNotifiHeight = " + mNotificationContainerParent.getHeight());
 			if(isContainerParentExpanded() && y - mNotificationContainerInitY > 0)
     		{
-				Debug.d("isContainerParentExpanded y = " + y + " mNotificationContainerInitY = " + mNotificationContainerInitY);
+//				Debug.d("isContainerParentExpanded y = " + y + " mNotificationContainerInitY = " + mNotificationContainerInitY);
     			return true;
     		}else if(isContainerParentCollapsed() && y - mNotificationContainerInitY < 0)
     		{
-    			Debug.d("isContainerParentCollapsed y = " + y + " mNotificationContainerInitY = " + mNotificationContainerInitY);
+//    			Debug.d("isContainerParentCollapsed y = " + y + " mNotificationContainerInitY = " + mNotificationContainerInitY);
     			return true;
     		}
 			float disY = mLastNotificationPositionY + y - mNotificationContainerInitY;
@@ -229,36 +235,40 @@ public class HandleNotificationTouch {
     		setBlurFraction(1 - disY / getNotificationContainerParentMinPosition());
     		if(isTouchInQuickApp)
     		{
-    			mGoToAPPTipView.setY(mNotificationContainerParent.getY() + mNotificationContainerParent.getHeight());
+    			mGoToAPPTipView.setVisibility(View.VISIBLE);
+    			float yyy = mNotificationContainerParent.getY() + mNotificationContainerParent.getHeight();
+    			Debug.d("mGoToAPPTipView move yy=" + yyy + " visibility = " + mGoToAPPTipView.isShown());
+    			mGoToAPPTipView.setY(yyy);
+//    			mGoToAPPTipView.setY(mNotificationContainerParent.getY() + mNotificationContainerParent.getHeight());
     		}
 			break;
 		}
 		case MotionEvent.ACTION_UP:
 		case MotionEvent.ACTION_CANCEL: {
 			Debug.d("ACTION_UP OR ACTION_CANCEL");
-			Debug.d("vTracker y = " + mVTracker.getYVelocity());
+//			Debug.d("vTracker y = " + mVTracker.getYVelocity());
 			float yveloc = mVTracker.getYVelocity();
 			mVTracker.clear(); 
 			if(yveloc > VELOCITY_DY)
 			{
-				Debug.d("setMaxPosition");
+//				Debug.d("setMaxPosition");
 				startAnimateExpand();
 			}
 			else if(yveloc < -1 * VELOCITY_DY)
 			{
-				Debug.d("setMinPosition");
+//				Debug.d("setMinPosition");
 				startAnimateCollopse();
 			}
 			else
 			{
 				if(isContainerParentOverHalf())
 				{
-					Debug.d("setMaxPosition");
+//					Debug.d("setMaxPosition");
 					startAnimateExpand();
 				}
 				else
 				{
-					Debug.d("setMinPosition");
+//					Debug.d("setMinPosition");
 					startAnimateCollopse();
 				}
 			}
@@ -281,6 +291,9 @@ public class HandleNotificationTouch {
 						&& x < (mCameraBtn.getX() + mCameraBtn.getWidth())
 						&& y > mCameraBtn.getY() && y < (mCameraBtn.getY() + mCameraBtn
 						.getHeight()));
+			Debug.d("x = " + x + " y = " + y + " getX = " + mCameraBtn.getX()
+					+ " width = " + mCameraBtn.getWidth() + " getY = "
+					+ mCameraBtn.getY() + " height = " + mCameraBtn.getHeight());
 				if(bTouch)
 				{
 					mTouchInMode = TOUCH_IN_RIGHT_AREA;
@@ -290,6 +303,10 @@ public class HandleNotificationTouch {
 		if(mPhoneCallBtn.isShown())
 		{
 			Debug.d("judge right bottom container");
+			Debug.d("x = " + x + " y = " + y + " getX = " + mPhoneCallBtn.getX()
+					+ " width = " + mPhoneCallBtn.getWidth() + " getY = "
+					+ mPhoneCallBtn.getY() + " height = " + mPhoneCallBtn.getHeight());
+			
 			bTouch |= (x > mPhoneCallBtn.getX()
 					&& x < (mPhoneCallBtn.getX() + mPhoneCallBtn.getWidth())
 					&& y > mPhoneCallBtn.getY() && y < (mPhoneCallBtn.getY() + mPhoneCallBtn
@@ -359,8 +376,12 @@ public class HandleNotificationTouch {
     /**
      * ÊÕËõµÄ¶¯»­
      */
-    private void startAnimateCollopse()
+    public void startAnimateCollopse()
     {
+    	if(isContainerParentCollapsed())
+    	{
+    		return;
+    	}
 		mNotificationContainerParent.animate().
 				translationY(getNotificationContainerParentMinPosition())
 				.withEndAction(new Runnable() {
@@ -390,6 +411,7 @@ public class HandleNotificationTouch {
 			}
 			if(isTouchInQuickApp)
 			{
+				Debug.d("touchInQuickApp onAnimationUpdate");
 				mGoToAPPTipView.setY(mNotificationContainerParent.getY()
 						+ mNotificationContainerParent.getHeight());
 			}
@@ -409,6 +431,7 @@ public class HandleNotificationTouch {
 			Debug.d("Collopse onAnimationUpdate y = " + mNotificationContainerParent.getY());
 			if(isTouchInQuickApp)
 			{
+				Debug.d("touchInQuickApp onAnimationUpdate");
 				mGoToAPPTipView.setY(mNotificationContainerParent.getY()
 						+ mNotificationContainerParent.getHeight());
 			}
@@ -427,9 +450,10 @@ public class HandleNotificationTouch {
 			{
 				mBar.onAllPanelsCollapsed();
 				mKeyguardStatusView.setVisibility(View.INVISIBLE);
+				mNotificationPanelView.updatePanelExpanded();
 				if(isTouchInQuickApp)
 				{
-					mGoToAPPTipView.setVisibility(View.GONE);
+//					mGoToAPPTipView.setVisibility(View.GONE);
 					if(mTouchInMode == TOUCH_IN_RIGHT_AREA)
 					{
 						goToCamera();
@@ -439,13 +463,15 @@ public class HandleNotificationTouch {
 						goToPhoneCall();
 					}
 				}
+				mNotificationPanelView.resetAllView();
 				break;
 			}
 			case NOTIFICATION_EXPAND_END:
 			{
+				mNotificationPanelView.updatePanelExpanded();
 				if(isTouchInQuickApp)
 				{
-					mGoToAPPTipView.setVisibility(View.GONE);
+//					mGoToAPPTipView.setVisibility(View.GONE);
 				}
 				break;
 			}
@@ -481,7 +507,7 @@ public class HandleNotificationTouch {
 	
 	private void setBlurFraction(float f)
 	{
-		Debug.d("setBlurFraction f = " + f);
+//		Debug.d("setBlurFraction f = " + f);
 		if(mBlurControlView != null && mBlurControlView.isBlurEnable())
 		{
 			mBlurControlView.setFraction(f);

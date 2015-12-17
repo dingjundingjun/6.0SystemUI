@@ -213,7 +213,7 @@ public abstract class PanelBar extends FrameLayout {
         for (PanelView pv : mPanels) {
             if (animate && !pv.isFullyCollapsed()) {
                 pv.collapse(delayed, speedUpFactor);
-                waiting = true;
+//                waiting = true;
             } else {
                 pv.resetViews();
                 pv.setExpandedFraction(0); // just in case

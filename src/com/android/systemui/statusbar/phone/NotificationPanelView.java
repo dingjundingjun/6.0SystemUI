@@ -272,7 +272,6 @@ public class NotificationPanelView extends PanelView implements
         mHandleNotificationTouch = new HandleNotificationTouch(mContext);
         mHandleNotificationTouch.setNotificationView(this);
         
-        
         mKeyguardStatusBar = (KeyguardStatusBarView) findViewById(R.id.keyguard_header);
         mKeyguardStatusView = (KeyguardStatusView) findViewById(R.id.keyguard_status_view);
         mHandleNotificationTouch.setKeyguardStatusView(mKeyguardStatusView);
@@ -478,7 +477,7 @@ public class NotificationPanelView extends PanelView implements
      * showing.
      */
     public void positionClockAndNotifications(float dy) {
-    	Debug.d("positionClockAndNotifications dy = " + dy);
+//    	Debug.d("positionClockAndNotifications dy = " + dy);
         boolean animate = mNotificationStackScroller.isAddOrRemoveAnimationPending();
         int stackScrollerPadding;
         if (mStatusBarState != StatusBarState.KEYGUARD) {
@@ -509,7 +508,7 @@ public class NotificationPanelView extends PanelView implements
             } 
             else 
             {
-            	Debug.d("mKeyguardStatusView.setY = " + mClockPositionResult.clockY);
+//            	Debug.d("mKeyguardStatusView.setY = " + mClockPositionResult.clockY);
                 mKeyguardStatusView.setY(mClockPositionResult.clockY);
             }
             updateClock(mClockPositionResult.clockAlpha, mClockPositionResult.clockScale);
@@ -848,144 +847,15 @@ public class NotificationPanelView extends PanelView implements
 //                / (getTempQsMaxExpansion() - mQsMinExpansionHeight));
         return 1f;
     }
-
-    private boolean setContainerParentTransLationY(MotionEvent event)
-    {
-    	final float y = event.getY();
-		switch (event.getActionMasked()) {
-		case MotionEvent.ACTION_DOWN: {
-			mLastNotificationPositionY = mNotificationContainerParent.getY();
-			mNotificationContainerInitY = y;
-			Debug.d("ACTION_DOWN mLastNotificationPositionY = " + mLastNotificationPositionY + " mNotificationContainerInitY = " + mNotificationContainerInitY);
-			Debug.d("getHeight = " + this.getHeight());
-			if(!this.isShown())
-			{
-				this.setVisibility(View.VISIBLE);
-			}
-			
-			if(!mNotificationStackScroller.isShown())
-			{
-//				Log.d("dingjun", "ACTION_DOWN mNotificationStackScroller visibility ");
-				mNotificationStackScroller.setVisibility(View.VISIBLE);
-			}
-			else
-			{
-				Debug.d("mNotificationStackScroller height = " + mNotificationStackScroller.getHeight());
-				Debug.d("mNotificationStackScroller width = " + mNotificationStackScroller.getWidth());
-				mNotificationStackScroller.setBackgroundColor(Color.DKGRAY);
-			}
-			if(isContainerParentExpanded())
-			{
-				return false;
-			}
-			break;
-		}
-		case MotionEvent.ACTION_MOVE: {
-			Debug.d("ACTION_MOVE");
-			positionClockAndNotifications(y - mNotificationContainerInitY);
-			mNotificationContainerParent.setVisibility(View.VISIBLE);
-//			mQsContainer.setVisibility(View.INVISIBLE);
-			if(!this.isShown())
-			{
-//				Log.d(TAG, "ACTION_MOVE NotificationView is not shown");
-				this.setVisibility(View.VISIBLE);
-			}
-			if(!mNotificationStackScroller.isShown())
-			{
-//				Log.d("dingjun", "ACTION_MOVE mNotificationStackScroller visibility ");
-				mNotificationStackScroller.setVisibility(View.VISIBLE);
-			}
-			else
-			{
-//				Debug.d("ACTION_MOVE mNotificationStackScroller height = " + mNotificationStackScroller.getHeight());
-//				Debug.d("ACTION_MOVE mNotificationStackScroller width = " + mNotificationStackScroller.getWidth());
-//				Debug.d("ACTION_MOVE mNotificationStackScroller x = "
-//						+ mNotificationStackScroller.getX() + " y = "
-//						+ mNotificationStackScroller.getY());
-//				Log.d("dingjun", "ACTION_MOVE mHeader x = "
-//						+ mHeader.getX() + " y = "
-//						+ mHeader.getY());
-				Debug.d("ACTION_MOVE mQsContainer x = "
-						+ mQsContainer.getX() + " y = "
-						+ mQsContainer.getY() + " mQsContainer width = " + mQsContainer.getWidth() + " height = " + mQsContainer.getHeight());
-
-//				mNotificationStackScroller.setBackgroundColor(Color.WHITE);
-			}
-//			Log.d(TAG, "mNotificationContainer height = " + mNotificationContainerParent.getHeight());
-//			Log.d(TAG, "mNotificationContainerInitY " + " mLastNotificationPositionY = "
-//					+ mLastNotificationPositionY
-//					+ " mNotificationContainerInitY = "
-//					+ mNotificationContainerInitY + " y = " + y + " mNotifiHeight = " + mNotificationContainerParent.getHeight());
-			if(isContainerParentExpanded() && y - mNotificationContainerInitY > 0)
-    		{
-				Debug.d("isContainerParentExpanded y = " + y + " mNotificationContainerInitY = " + mNotificationContainerInitY);
-    			return true;
-    		}else if(isContainerParentCollapsed() && y - mNotificationContainerInitY < 0)
-    		{
-    			Debug.d("isContainerParentCollapsed y = " + y + " mNotificationContainerInitY = " + mNotificationContainerInitY);
-    			return true;
-    		}
-			float disY = mLastNotificationPositionY + y - mNotificationContainerInitY;
-			Debug.d(" disY = " + disY + " mLastNotificationPositionY = "
-					+ mLastNotificationPositionY
-					+ " mNotificationContainerInitY = "
-					+ mNotificationContainerInitY + " y = " + y);
-    		disY = disY > 50 ? 50 : disY;
-    		mNotificationContainerParent.setY(disY);
-    		
-			break;
-		}
-		case MotionEvent.ACTION_UP:
-		case MotionEvent.ACTION_CANCEL: {
-			Debug.d("ACTION_UP OR ACTION_CANCEL");
-			if(isContainerParentOverHalf())
-			{
-				Debug.d("setMaxPosition");
-				bExpaned = true;
-				mNotificationContainerParent.setY(getNotificationContainerParentMaxPosition());
-			}
-			else
-			{
-				Debug.d("setMinPosition");
-				mNotificationContainerParent.setY(getNotificationContainerParentMinPosition());
-				mBar.onAllPanelsCollapsed();
-			}
-			break;
-		}
-		}
-		return true;
-    }
-    
-    private boolean isContainerParentOverHalf()
-    {
-    	if(mNotificationContainerParent.getY() > getNotificationContainerParentMinPosition() / 2)
-    	{
-    		return true;
-    	}
-    	else
-    	{
-    		return false;
-    	}
-    }
     
     public float getNotificationContainerParentMinPosition()
     {
     	return -1*getMaxPanelHeight();
     }
     
-    private float getNotificationContainerParentMaxPosition()
-    {
-    	return 0;
-    }
     private boolean isContainerParentExpanded()
     {
-    	
     	return mNotificationContainerParent.getY() == 0;
-    }
-    
-    private boolean isContainerParentCollapsed()
-    {
-    	return mNotificationContainerParent.getY() == getNotificationContainerParentMinPosition();
     }
     
     private void collseContainerParent()
@@ -1008,7 +878,7 @@ public class NotificationPanelView extends PanelView implements
 //            	  return onTouchEvent(event);
 //              }
 //		}
-    	Debug.d("onTouchEvent y = " + event.getY() + " x = " + event.getX());
+//    	Debug.d("onTouchEvent y = " + event.getY() + " x = " + event.getX());
     	boolean isSuper = mHandleNotificationTouch.onTouchEvent(event);
 //		boolean isSuper = setContainerParentTransLationY(event);
 		
@@ -1909,7 +1779,7 @@ public class NotificationPanelView extends PanelView implements
         }
     }
 
-    private void updatePanelExpanded() {
+    public void updatePanelExpanded() {
         boolean isExpanded = !isFullyCollapsed();
         if (mPanelExpanded != isExpanded) {
             mHeadsUpManager.setIsExpanded(isExpanded);
@@ -2105,7 +1975,7 @@ public class NotificationPanelView extends PanelView implements
 
     private void updateKeyguardBottomAreaAlpha() {
         float alpha = Math.min(getKeyguardContentsAlpha(), 1 - getQsExpansionFraction());
-        Debug.d("updateKeyguardBottomAreaAlpha = " + alpha);
+//        Debug.d("updateKeyguardBottomAreaAlpha = " + alpha);
 //        mKeyguardBottomArea.setAlpha(alpha);
 //        mKeyguardBottomArea.setImportantForAccessibility(alpha == 0f
 //                ? IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
@@ -2806,7 +2676,7 @@ public class NotificationPanelView extends PanelView implements
 	
 	public boolean isFullyCollapsed()
 	{
-		return isContainerParentExpanded();
+		return !isContainerParentExpanded();
 	}
 
 	@Override
@@ -2819,5 +2689,23 @@ public class NotificationPanelView extends PanelView implements
 	@Override
 	public void freeBlurBG() {
 		// TODO Auto-generated method stub
+	}
+	
+	/**
+	 * 通知栏收起来以后，要还原一些view的位置
+	 */
+	public void resetAllView()
+	{
+		mQsContainer.collopse();
+	}
+	
+	public void ExpandedQS()
+	{
+		mQsContainer.expaned();
+	}
+	
+	public void collopseWithAnimate()
+	{
+		mHandleNotificationTouch.startAnimateCollopse();
 	}
 }

@@ -281,7 +281,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     StatusBarWindowView mStatusBarWindow;
     PhoneStatusBarView mStatusBarView;
     private int mStatusBarWindowState = WINDOW_STATE_SHOWING;
-    private StatusBarWindowManager mStatusBarWindowManager;
+    public StatusBarWindowManager mStatusBarWindowManager;
     private UnlockMethodCache mUnlockMethodCache;
     private DozeServiceHost mDozeServiceHost;
     private boolean mScreenOnComingFromTouch;
@@ -307,7 +307,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 //    KeyguardBottomAreaView mKeyguardBottomArea;
     boolean mLeaveOpenOnKeyguardHide;
 //    KeyguardIndicationController mKeyguardIndicationController;
-
+    /**ËøÆÁÏûÊ§*/
     private boolean mKeyguardFadingAway;
     private long mKeyguardFadingAwayDelay;
     private long mKeyguardFadingAwayDuration;
@@ -1819,10 +1819,17 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     }
 
     private int adjustDisableFlags(int state) {
+		Debug.d("mLaunchTransitionFadingAway = " + mLaunchTransitionFadingAway
+				+ " mKeyguardFadingAway = " + mKeyguardFadingAway
+				+ " mExpandedVisible = " + mExpandedVisible
+				+ " mBouncerShowing = " + " mWaitingForKeyguardExit = "
+				+ mWaitingForKeyguardExit);
         if (!mLaunchTransitionFadingAway && !mKeyguardFadingAway
                 && (mExpandedVisible || mBouncerShowing || mWaitingForKeyguardExit)) {
-            state |= StatusBarManager.DISABLE_NOTIFICATION_ICONS;
-            state |= StatusBarManager.DISABLE_SYSTEM_INFO;
+        	//add by dingjun  
+        	//we need to show StatusBar in keyguard mode
+//            state |= StatusBarManager.DISABLE_NOTIFICATION_ICONS;
+//            state |= StatusBarManager.DISABLE_SYSTEM_INFO;
         }
         return state;
     }
@@ -1834,7 +1841,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         animate &= mStatusBarWindowState != WINDOW_STATE_HIDDEN;
         mDisabledUnmodified1 = state1;
         mDisabledUnmodified2 = state2;
+        new Exception().printStackTrace();
+        Debug.d("disable state1 = " + state1);  //52428800
         state1 = adjustDisableFlags(state1);
+        Debug.d("disable state111111 = " + state1);
         final int old1 = mDisabled1;
         final int diff1 = state1 ^ old1;
         mDisabled1 = state1;
@@ -1874,6 +1884,18 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 : "quick_settings");
         flagdbg.append(((diff2  & StatusBarManager.DISABLE2_QUICK_SETTINGS) != 0) ? "* " : " ");
         flagdbg.append(">");
+        //PhoneStatusBar: disable1: 0x00000000 -> 0x03320000 (diff1: 0x03320000)
+        //PhoneStatusBar: disable2: 0x00000000 -> 0x00000000 (diff2: 0x00000000)
+        //disable: < expand ICONS* alerts SYSTEM_INFO* back HOME* RECENT* clock SEARCH* quick_settings >  ËøÆÁ
+        
+        /**ÏÔÊ¾
+         PhoneStatusBar: disable1: 0x03200000 -> 0x00000000 (diff1: 0x03200000)
+		 PhoneStatusBar: disable2: 0x00000000 -> 0x00000000 (diff2: 0x00000000)
+		 PhoneStatusBar: disable: < expand icons alerts system_info back home* recent* clock search* quick_settings >
+         * 
+         * */
+         
+        
         Log.d(TAG, flagdbg.toString());
 
         if ((diff1 & StatusBarManager.DISABLE_SYSTEM_INFO) != 0) {
@@ -2415,6 +2437,13 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 Integer.toHexString(vis), Integer.toHexString(mask),
                 Integer.toHexString(oldVal), Integer.toHexString(newVal),
                 Integer.toHexString(diff)));
+        new Exception("mStatusBarMode").printStackTrace();
+        Debug.d("mStatusBarMode " + String.format(
+                "setSystemUiVisibility vis=%s mask=%s oldVal=%s newVal=%s diff=%s",
+                Integer.toHexString(vis), Integer.toHexString(mask),
+                Integer.toHexString(oldVal), Integer.toHexString(newVal),
+                Integer.toHexString(diff)));
+        
         if (diff != 0) {
             // we never set the recents bit via this method, so save the prior state to prevent
             // clobbering the bit below
@@ -2438,6 +2467,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 mNoAnimationOnNextBarModeChange = true;
             }
 
+            Debug.d("mStatusBarMode = " + "oldVal = " + oldVal + " newVal = " + newVal);
             // update status bar mode
             final int sbMode = computeBarMode(oldVal, newVal, mStatusBarView.getBarTransitions(),
                     View.STATUS_BAR_TRANSIENT, View.STATUS_BAR_TRANSLUCENT);
@@ -2453,10 +2483,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 mStatusBarMode = sbMode;
                 checkBarModes = true;
             }
+            
             if (nbModeChanged && nbMode != mNavigationBarMode) {
                 mNavigationBarMode = nbMode;
                 checkBarModes = true;
             }
+            Debug.d("mStatusBarMode = " + mStatusBarMode + " mNavigationBarMode = " + mNavigationBarMode);
             if (checkBarModes) {
                 checkBarModes();
             }
@@ -2485,8 +2517,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             if (wasRecentsVisible) {
                 mSystemUiVisibility |= View.RECENT_APPS_VISIBLE;
             }
-
+            
             // send updated sysui visibility to window manager
+            Debug.d("mStatusBarMode = " + " mSystemUiVisibility = " + mSystemUiVisibility);
+            //1000011000000000
             notifyUiVisibilityChanged(mSystemUiVisibility);
         }
     }
@@ -3651,7 +3685,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     }
 
     public boolean onBackPressed() {
+    	Debug.d("onBackPressed");
         if (mStatusBarKeyguardViewManager.onBackPressed()) {
+        	Debug.d("mStatusBarKeyguardViewManager.onBackPressed() == true");
             return true;
         }
 //        if (mNotificationPanel.isQsExpanded()) {
@@ -3665,7 +3701,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 //            return true;
 //        }
         if (mState != StatusBarState.KEYGUARD && mState != StatusBarState.SHADE_LOCKED) {
-            animateCollapsePanels();
+//            animateCollapsePanels();
+        	Debug.d("mNotificationPanel.collopseWithAnimate()");
+        	mNotificationPanel.collopseWithAnimate();
             return true;
         }
         return false;
